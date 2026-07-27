@@ -1,0 +1,98 @@
+import React, { useState, useRef } from 'react'
+import { UploadCloud, Image as ImageIcon, X, CheckCircle2 } from 'lucide-react'
+
+export function FileDrop({ onFileSelected, accept = "image/*", title = "Upload Image for Analysis", description = "Drag & drop or click to upload JPEG/PNG" }) {
+  const [isDragging, setIsDragging] = useState(false)
+  const [preview, setPreview] = useState(null)
+  const [selectedFile, setSelectedFile] = useState(null)
+  const fileInputRef = useRef(null)
+
+  const handleFileChange = (file) => {
+    if (file && file.type.startsWith('image/')) {
+      setSelectedFile(file)
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setPreview(reader.result)
+      }
+      reader.readAsDataURL(file)
+      if (onFileSelected) onFileSelected(file)
+    }
+  }
+
+  const handleDrop = (e) => {
+    e.preventDefault()
+    setIsDragging(false)
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFileChange(e.dataTransfer.files[0])
+    }
+  }
+
+  const handleDragOver = (e) => {
+    e.preventDefault()
+    setIsDragging(true)
+  }
+
+  const handleDragLeave = () => {
+    setIsDragging(false)
+  }
+
+  const clearFile = (e) => {
+    e.stopPropagation()
+    setPreview(null)
+    setSelectedFile(null)
+    if (fileInputRef.current) fileInputRef.current.value = ''
+    if (onFileSelected) onFileSelected(null)
+  }
+
+  return (
+    <div className="w-full">
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={(e) => e.target.files && handleFileChange(e.target.files[0])}
+        accept={accept}
+        className="hidden"
+      />
+
+      {preview ? (
+        <div className="relative group rounded-2xl overflow-hidden border-2 border-orange-500/50 bg-slate-800/80 p-2 transition-all">
+          <img src={preview} alt="Upload preview" className="w-full h-56 object-cover rounded-xl" />
+          <div className="absolute top-4 right-4 flex space-x-2">
+            <button
+              onClick={clearFile}
+              className="bg-slate-900/80 hover:bg-rose-600 text-white p-2 rounded-full backdrop-blur-md transition-colors"
+              title="Remove image"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+          <div className="mt-3 px-3 pb-2 flex items-center justify-between text-xs text-slate-300">
+            <span className="flex items-center space-x-1.5 font-medium text-orange-400">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <span>{selectedFile?.name}</span>
+            </span>
+            <span className="text-slate-400">{(selectedFile?.size / 1024).toFixed(1)} KB</span>
+          </div>
+        </div>
+      ) : (
+        <div
+          onClick={() => fileInputRef.current?.click()}
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          className={`border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all duration-200 flex flex-col items-center justify-center ${
+            isDragging
+              ? 'border-orange-500 bg-orange-500/10 scale-[1.01]'
+              : 'border-slate-700 bg-slate-800/40 hover:border-slate-500 hover:bg-slate-800/80'
+          }`}
+        >
+          <div className="w-14 h-14 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center mb-3 text-orange-400 group-hover:scale-110 transition-transform">
+            <UploadCloud className="w-7 h-7" />
+          </div>
+          <h3 className="text-sm font-semibold text-slate-200 mb-1">{title}</h3>
+          <p className="text-xs text-slate-400 max-w-xs">{description}</p>
+        </div>
+      )}
+    </div>
+  )
+}
