@@ -1,3 +1,39 @@
-AccessIndia_AI_45_VibeCoding_Prompts.pdf
+# Environment
 .env
+.env.local
+.env.*.local
 
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+venv/
+.venv/
+
+# Test / Cache
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+AccessIndia_AI_*_VibeCoding_Prompts.pdf
+AccessIndia_AI_Step_by_Step_Build_Guide.pdf

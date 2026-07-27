@@ -1,16 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { Send, Paperclip, Cpu, Eye, Volume2, Navigation, ShieldCheck, User, Image as ImageIcon } from 'lucide-react'
+import { Send, Mic, MicOff, Cpu, Eye, Volume2, Navigation, ShieldCheck, Sparkles } from 'lucide-react'
 import { useAppStore } from '../../store/useAppStore'
 import { chatAPI } from '../../services/api'
+import { useSpeechToText } from '../../hooks/useSpeechToText'
 import { TTSButton } from '../Shared/TTSButton'
 import { LoadingAgent } from '../Shared/LoadingAgent'
-import { FileDrop } from '../Shared/FileDrop'
 
 export function OrchestratorChat() {
-  const { messages, addMessage, isLoading, setLoading } = useAppStore()
-  const [inputText, setInputText] = useState('')
-  const [selectedFile, setSelectedFile] = useState(null)
-  const [showFileModal, setShowFileModal] = useState(false)
+  const { messages, addMessage, isLoading, setLoading, clearChat } = useAppStore()
+  const { isListening, transcript, error: sttError, startListening, stopListening } = useSpeechToText()
+  const [input, setInput] = useState('')
   const messagesEndRef = useRef(null)
 
   const scrollToBottom = () => {
@@ -21,162 +20,167 @@ export function OrchestratorChat() {
     scrollToBottom()
   }, [messages, isLoading])
 
-  const handleSend = async (e) => {
-    e?.preventDefault()
-    if (!inputText.trim() && !selectedFile) return
+  // Sync speech transcript into input
+  useEffect(() => {
+    if (transcript) {
+      setInput(transcript)
+    }
+  }, [transcript])
 
-    const userText = inputText.trim() || (selectedFile ? `[Uploaded Image: ${selectedFile.name}]` : '')
-    
-    // Add user message
-    addMessage({
-      sender: 'user',
-      text: userText,
-      hasFile: !!selectedFile,
-    })
+  const handleSend = async () => {
+    const text = input.trim() || transcript.trim()
+    if (!text) return
 
-    const fileToUpload = selectedFile
-    setInputText('')
-    setSelectedFile(null)
-    setShowFileModal(false)
-    setLoading(true)
+    addMessage({ role: 'user', content: text, type: 'text' })
+    setInput('')
+    setLoading(true, 'orchestrator')
 
     try {
-      const res = await chatAPI.sendMessage(userText)
-      
-      let extraDataText = ''
-      if (res.data) {
-        if (res.data.description) extraDataText += `\n\n📌 Scene: ${res.data.description}`
-        if (res.data.ocr_text) extraDataText += `\n\n📝 OCR Text:\n${res.data.ocr_text}`
-        if (res.data.score) extraDataText += `\n\n🛡️ Accessibility Score: ${res.data.score}/100`
-        if (res.data.accessibility_summary) extraDataText += `\n\n🗺️ Route Info: ${res.data.accessibility_summary}`
-      }
-
+      const res = await chatAPI.sendMessage(text)
       addMessage({
-        sender: 'agent',
+        role: 'agent',
         agent: res.agent || 'orchestrator',
-        text: res.message + extraDataText,
-        intent: res.intent,
-        confidence: res.confidence,
-        data: res.data,
+        content: res.message,
+        type: 'text',
+        metadata: { intent: res.intent, confidence: res.confidence, data: res.data },
       })
     } catch (err) {
-      console.error('Chat error:', err)
       addMessage({
-        sender: 'agent',
+        role: 'agent',
         agent: 'orchestrator',
-        text: '⚠️ Unable to connect to AccessIndia Backend. Using offline intelligence fallback. Please check backend server status.',
+        content: '⚠️ ' + (err.message || 'Unable to connect to backend.'),
+        type: 'text',
       })
     } finally {
-      setLoading(false)
+      setLoading(false, null)
+    }
+  }
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleSend()
+    }
+  }
+
+  const toggleListening = () => {
+    if (isListening) {
+      stopListening()
+    } else {
+      startListening()
     }
   }
 
   const getAgentBadge = (agent) => {
     switch (agent) {
-      case 'vision':
-        return { icon: Eye, name: 'Vision Agent', color: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30' }
-      case 'communication':
-        return { icon: Volume2, name: 'Communication Agent', color: 'bg-purple-500/10 text-purple-400 border-purple-500/30' }
-      case 'navigation':
-        return { icon: Navigation, name: 'Navigation Agent', color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' }
-      case 'audit':
-        return { icon: ShieldCheck, name: 'Audit Agent', color: 'bg-amber-500/10 text-amber-400 border-amber-500/30' }
-      default:
-        return { icon: Cpu, name: 'Central Orchestrator', color: 'bg-orange-500/10 text-orange-400 border-orange-500/30' }
+      case 'vision': return { icon: Eye, name: 'Vision Agent', color: 'text-cyan-400 bg-cyan-500/10' }
+      case 'communication': return { icon: Volume2, name: 'Communication Agent', color: 'text-purple-400 bg-purple-500/10' }
+      case 'navigation': return { icon: Navigation, name: 'Navigation Agent', color: 'text-emerald-400 bg-emerald-500/10' }
+      case 'audit': return { icon: ShieldCheck, name: 'Audit Agent', color: 'text-amber-400 bg-amber-500/10' }
+      default: return { icon: Cpu, name: 'AI Assistant', color: 'text-orange-400 bg-orange-500/10' }
     }
   }
 
   return (
-    <div className="flex flex-col h-[calc(100vh-4rem)] bg-slate-900">
-      {/* Messages Container */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-4">
+    <div className="flex flex-col h-[calc(100vh-8rem)] max-w-4xl mx-auto">
+      {/* Chat Messages */}
+      <div className="flex-1 overflow-y-auto space-y-4 pb-4">
+        {messages.length === 0 && (
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center max-w-md">
+              <div className="w-16 h-16 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center mx-auto mb-4">
+                <Sparkles className="w-8 h-8 text-orange-400" />
+              </div>
+              <h2 className="text-xl font-bold text-slate-200 mb-2">Welcome to AccessIndia AI</h2>
+              <p className="text-sm text-slate-400 leading-relaxed">
+                I'm your multi-agent accessibility assistant. Ask me to read text from an image,
+                find an accessible route, audit a building, or help with communication.
+              </p>
+            </div>
+          </div>
+        )}
+
         {messages.map((msg) => {
-          const isUser = msg.sender === 'user'
-          const badge = getAgentBadge(msg.agent)
-          const BadgeIcon = badge.icon
+          const isUser = msg.role === 'user'
+          const badge = !isUser ? getAgentBadge(msg.agent) : null
 
           return (
-            <div
-              key={msg.id}
-              className={`flex ${isUser ? 'justify-end' : 'justify-start'} animate-fade-in`}
-            >
-              <div className={`max-w-2xl rounded-2xl p-4 shadow-lg ${
+            <div key={msg.id} className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
+              <div className={`max-w-2xl p-4 shadow-lg ${
                 isUser
-                  ? 'bg-orange-500 text-white rounded-br-none'
-                  : 'bg-slate-800 border border-slate-700/70 text-slate-100 rounded-bl-none'
+                  ? 'chat-bubble-user text-white'
+                  : 'chat-bubble-agent text-slate-100'
               }`}>
-                {/* Agent Header Tag */}
-                {!isUser && (
-                  <div className="flex items-center justify-between border-b border-slate-700/60 pb-2 mb-2">
-                    <span className={`inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium border ${badge.color}`}>
-                      <BadgeIcon className="w-3.5 h-3.5" />
+                {badge && (
+                  <div className="flex items-center gap-2 mb-2 pb-2 border-b border-slate-600/50">
+                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${badge.color}`}>
+                      <badge.icon className="w-3.5 h-3.5" />
                       <span>{badge.name}</span>
                     </span>
-                    {msg.confidence && (
-                      <span className="text-[10px] text-slate-400">Confidence: {(msg.confidence * 100).toFixed(0)}%</span>
+                    {msg.metadata?.confidence && (
+                      <span className="text-[10px] text-slate-400">
+                        {(msg.metadata.confidence * 100).toFixed(0)}% confidence
+                      </span>
                     )}
                   </div>
                 )}
-
-                {/* Message Body */}
-                <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.text}</p>
-
-                {/* Footer Controls */}
-                <div className={`flex items-center justify-between mt-3 text-[11px] ${isUser ? 'text-orange-100' : 'text-slate-400'}`}>
-                  <span>{msg.timestamp}</span>
-                  {!isUser && <TTSButton text={msg.text} label="Listen" />}
+                <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+                <div className="flex items-center justify-between mt-3 text-[11px] text-slate-400">
+                  <span>{new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                  {!isUser && <TTSButton text={msg.content} />}
                 </div>
               </div>
             </div>
           )
         })}
 
-        {isLoading && <LoadingAgent agentName="Central Orchestrator" />}
+        {isLoading && <LoadingAgent agentName="AI Assistant" />}
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Upload Drawer Preview */}
-      {showFileModal && (
-        <div className="px-6 py-3 bg-slate-800/90 border-t border-slate-700">
-          <FileDrop
-            onFileSelected={(file) => setSelectedFile(file)}
-            title="Attach Image for AI Processing"
-            description="Select building photo, document signboard, or street view"
-          />
+      {/* Speech-to-text transcript indicator */}
+      {isListening && transcript && (
+        <div className="px-4 py-2 bg-orange-500/10 border border-orange-500/30 rounded-xl mb-2 text-sm text-orange-300">
+          🎤 {transcript}
+        </div>
+      )}
+      {sttError && (
+        <div className="px-4 py-2 bg-rose-500/10 border border-rose-500/30 rounded-xl mb-2 text-sm text-rose-400">
+          ⚠️ {sttError}
         </div>
       )}
 
-      {/* Input Form Bar */}
-      <form onSubmit={handleSend} className="p-4 bg-slate-950 border-t border-slate-800 flex items-center space-x-3">
+      {/* Input Area */}
+      <div className="flex items-center gap-3 bg-slate-800/80 border border-slate-700 rounded-2xl p-3">
         <button
-          type="button"
-          onClick={() => setShowFileModal(!showFileModal)}
-          className={`p-3 rounded-xl border transition-all ${
-            showFileModal || selectedFile
-              ? 'bg-orange-500/20 text-orange-400 border-orange-500/40'
-              : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-white'
+          onClick={toggleListening}
+          className={`p-3 rounded-xl transition-all ${
+            isListening
+              ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30 animate-pulse'
+              : 'bg-slate-700 text-slate-300 hover:text-white hover:bg-slate-600'
           }`}
-          title="Attach image"
+          title={isListening ? 'Stop listening' : 'Start voice input'}
         >
-          <Paperclip className="w-5 h-5" />
+          {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
         </button>
 
         <input
           type="text"
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
-          placeholder="Ask anything... (e.g. 'Read text from image', 'Find accessible metro station', 'Audit entrance ramp')"
-          className="flex-1 bg-slate-900 border border-slate-800 focus:border-orange-500 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none transition-colors"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder={isListening ? 'Listening...' : 'Ask me anything...'}
+          className="flex-1 bg-transparent border-none text-sm text-white placeholder-slate-500 focus:outline-none px-2"
         />
 
         <button
-          type="submit"
-          disabled={!inputText.trim() && !selectedFile}
-          className="bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white p-3 rounded-xl font-medium transition-all shadow-lg shadow-orange-500/20 flex items-center justify-center"
+          onClick={handleSend}
+          disabled={!input.trim() && !transcript.trim()}
+          className="p-3 rounded-xl bg-orange-500 hover:bg-orange-600 disabled:opacity-40 text-white transition-all shadow-lg shadow-orange-500/20"
         >
           <Send className="w-5 h-5" />
         </button>
-      </form>
+      </div>
     </div>
   )
 }
