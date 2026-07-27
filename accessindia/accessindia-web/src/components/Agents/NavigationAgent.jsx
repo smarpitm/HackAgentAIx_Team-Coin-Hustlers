@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Navigation, MapPin, Search, CheckCircle2, Building2, Shield, Compass, ArrowRight } from 'lucide-react'
-import { getRoute, getNearby } from '../../services/api'
+import { navAPI } from '../../services/api'
 import { TTSButton } from '../Shared/TTSButton'
 import { LoadingAgent } from '../Shared/LoadingAgent'
 
@@ -17,10 +17,12 @@ export function NavigationAgent() {
     setLoading(true)
 
     try {
-      const data = await getRoute(origin, destination)
+      const data = await navAPI.getRoute({ origin_lat: 28.6139, origin_lng: 77.2090, destination, mode: 'transit' })
       setRouteData(data)
-      if (data.nearby_facilities) {
-        setNearbyFacilities(data.nearby_facilities)
+      // Fetch nearby facilities
+      const nearby = await navAPI.getNearby(28.6139, 77.2090, 'hospital')
+      if (nearby.places) {
+        setNearbyFacilities(nearby.places)
       }
     } catch (err) {
       console.error('Route calculation error:', err)

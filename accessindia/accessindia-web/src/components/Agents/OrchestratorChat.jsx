@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Send, Paperclip, Cpu, Eye, Volume2, Navigation, ShieldCheck, User, Image as ImageIcon } from 'lucide-react'
 import { useAppStore } from '../../store/useAppStore'
-import { sendChat } from '../../services/api'
+import { chatAPI } from '../../services/api'
 import { TTSButton } from '../Shared/TTSButton'
 import { LoadingAgent } from '../Shared/LoadingAgent'
 import { FileDrop } from '../Shared/FileDrop'
@@ -41,7 +41,7 @@ export function OrchestratorChat() {
     setLoading(true)
 
     try {
-      const res = await sendChat(userText, fileToUpload)
+      const res = await chatAPI.sendMessage(userText)
       
       let extraDataText = ''
       if (res.data) {

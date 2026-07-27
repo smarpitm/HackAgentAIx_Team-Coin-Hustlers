@@ -1,29 +1,34 @@
 import { create } from 'zustand'
 
 const useAppStore = create((set) => ({
-  // Active agent state
-  activeAgent: null,
+  // Active agent
+  activeAgent: 'orchestrator',
   setActiveAgent: (agent) => set({ activeAgent: agent }),
 
-  // Messages for chat
+  // Messages array: { id, role, agent, content, type, timestamp, metadata }
   messages: [],
-  addMessage: (message) => set((state) => ({ 
-    messages: [...state.messages, message] 
-  })),
-  clearMessages: () => set({ messages: [] }),
+  addMessage: (msg) =>
+    set((state) => ({
+      messages: [
+        ...state.messages,
+        {
+          id: crypto.randomUUID(),
+          timestamp: new Date().toISOString(),
+          ...msg,
+        },
+      ],
+    })),
+  clearChat: () => set({ messages: [] }),
 
   // Loading state
   isLoading: false,
-  setLoading: (loading) => set({ isLoading: loading }),
+  loadingAgent: null,
+  setLoading: (loading, agent = null) =>
+    set({ isLoading: loading, loadingAgent: agent }),
 
   // User location
-  userLocation: null,
-  setUserLocation: (location) => set({ userLocation: location }),
-
-  // Error handling
-  error: null,
-  setError: (error) => set({ error }),
-  clearError: () => set({ error: null }),
+  userLocation: { lat: 28.6139, lng: 77.2090 },
+  setUserLocation: (lat, lng) => set({ userLocation: { lat, lng } }),
 }))
 
 export default useAppStore

@@ -2,12 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  margin: 0;
-  padding: 0;
-  background-color: #0f172a;
-  color: #f4f4f5;
-  font-family: 'Inter', sans-serif;
+@layer base {
+  body {
+    @apply bg-slate-900 text-white antialiased;
+  }
+
+  button:focus-visible {
+    @apply ring-2 ring-orange-500 ring-offset-2 ring-offset-slate-900 outline-none;
+  }
+}
+
+@layer components {
+  .agent-card {
+    @apply bg-slate-800 rounded-xl border border-slate-700 hover:border-orange-500 transition-colors duration-200;
+  }
+
+  .chat-bubble-user {
+    @apply bg-orange-500 rounded-2xl rounded-br-sm;
+  }
+
+  .chat-bubble-agent {
+    @apply bg-slate-700 rounded-2xl rounded-bl-sm;
+  }
 }
 
 /* Custom scrollbars */

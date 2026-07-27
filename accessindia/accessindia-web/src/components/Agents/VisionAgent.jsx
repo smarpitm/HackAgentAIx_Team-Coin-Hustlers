@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Eye, FileText, Sparkles, CheckCircle2, AlertCircle } from 'lucide-react'
-import { analyzeVision } from '../../services/api'
+import { visionAPI } from '../../services/api'
 import { FileDrop } from '../Shared/FileDrop'
 import { TTSButton } from '../Shared/TTSButton'
 import { LoadingAgent } from '../Shared/LoadingAgent'
@@ -18,7 +18,7 @@ export function VisionAgent() {
     setResult(null)
 
     try {
-      const data = await analyzeVision(selectedFile)
+      const data = await visionAPI.analyzeImage(selectedFile)
       setResult(data)
     } catch (err) {
       console.error('Vision analysis error:', err)

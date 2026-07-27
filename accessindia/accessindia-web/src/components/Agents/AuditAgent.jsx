@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { ShieldCheck, AlertTriangle, Wrench, Sparkles, CheckCircle2, AlertCircle } from 'lucide-react'
-import { analyzeAudit } from '../../services/api'
+import { auditAPI } from '../../services/api'
 import { FileDrop } from '../Shared/FileDrop'
 import { TTSButton } from '../Shared/TTSButton'
 import { LoadingAgent } from '../Shared/LoadingAgent'
@@ -17,7 +17,7 @@ export function AuditAgent() {
     setError(null)
 
     try {
-      const data = await analyzeAudit(selectedFile)
+      const data = await auditAPI.analyzeImage(selectedFile)
       setAuditResult(data)
     } catch (err) {
       console.error('Audit analysis error:', err)
