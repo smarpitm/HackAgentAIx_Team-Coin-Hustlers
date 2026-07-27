@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 # Initialize app
 app = FastAPI(
     title="AccessIndia AI",
-    description="Multi-Agent Accessibility Platform for People with Disabilities",
+    description="Multi-agent accessibility platform",
     version="1.0.0"
 )
 
@@ -44,9 +44,8 @@ app.include_router(audit.router)
 async def health_check():
     """Health check endpoint"""
     return {
-        "status": "healthy",
-        "service": "AccessIndia AI",
-        "version": "1.0.0"
+        "status": "ok",
+        "service": "accessindia-ai"
     }
 
 

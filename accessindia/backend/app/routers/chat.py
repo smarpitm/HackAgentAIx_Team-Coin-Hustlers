@@ -6,30 +6,30 @@ from app.agents.orchestrator import get_orchestrator
 import logging
 
 logger = logging.getLogger(__name__)
+
 router = APIRouter(prefix="/api/chat", tags=["chat"])
 
 
 @router.post("", response_model=ChatResponse)
 async def chat(request: ChatRequest):
-    """
-    Main chat endpoint - routes to appropriate agent.
-    
+    """Main chat endpoint - classifies intent and routes to appropriate agent.
+
     Args:
         request: ChatRequest with message and optional session_id
-        
+
     Returns:
         ChatResponse with intent, agent, confidence, message
     """
     try:
         orchestrator = get_orchestrator()
         result = await orchestrator.classify_intent(request.message)
-        
+
         return ChatResponse(
             intent=result["intent"],
             agent=result["agent"],
             confidence=result["confidence"],
             message=result["message"],
-            data={"reasoning": result.get("reasoning", "")}
+            data={"reasoning": result.get("reasoning", "")} if result.get("reasoning") else None
         )
     except Exception as e:
         logger.error(f"Chat endpoint error: {e}")

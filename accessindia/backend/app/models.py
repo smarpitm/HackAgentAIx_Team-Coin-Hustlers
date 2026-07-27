@@ -26,7 +26,7 @@ class VisionResponse(BaseModel):
     ocr_text: str = Field(..., description="Extracted text from image")
     description: str = Field(..., description="Scene description")
     detected_items: List[str] = Field(default_factory=list, description="Detected objects")
-    confidence: float = Field(..., ge=0.0, le=1.0, description="Analysis confidence")
+    confidence: float = Field(default=0.90, ge=0.0, le=1.0, description="Analysis confidence")
 
 
 class NavRouteRequest(BaseModel):
@@ -35,7 +35,7 @@ class NavRouteRequest(BaseModel):
     origin_lng: float = Field(..., ge=-180, le=180, description="Origin longitude")
     destination: str = Field(..., description="Destination address or place")
     mode: str = Field(default="walking", description="Travel mode")
-    
+
     @field_validator("mode")
     @classmethod
     def validate_mode(cls, v: str) -> str:
@@ -46,45 +46,22 @@ class NavRouteRequest(BaseModel):
         return v.lower()
 
 
+class NavRouteStep(BaseModel):
+    """Individual navigation step"""
+    instruction: str = Field(..., description="Step instruction")
+    distance: str = Field(..., description="Step distance")
+    duration: str = Field(..., description="Step duration")
+
+
 class NavRouteResponse(BaseModel):
     """Navigation route response"""
     distance: str = Field(..., description="Total distance")
     duration: str = Field(..., description="Estimated duration")
-    steps: List[Dict[str, Any]] = Field(default_factory=list, description="Step-by-step directions")
-    polyline: str = Field(..., description="Encoded polyline for map display")
-    wheelchair_accessible: bool = Field(default=True, description="Wheelchair accessibility flag")
-
-
-class NavNearbyRequest(BaseModel):
-    """Nearby places request"""
-    lat: float = Field(..., ge=-90, le=90, description="Latitude")
-    lng: float = Field(..., ge=-180, le=180, description="Longitude")
-    place_type: str = Field(default="hospital", description="Type of place to search")
-    radius: int = Field(default=1000, ge=100, le=5000, description="Search radius in meters")
-
-
-class NavNearbyResponse(BaseModel):
-    """Nearby places response"""
-    places: List[Dict[str, Any]] = Field(default_factory=list, description="List of nearby places")
-
-
-class AuditIssue(BaseModel):
-    """Accessibility audit issue"""
-    category: str = Field(..., description="Issue category")
-    description: str = Field(..., description="Issue description")
-    severity: Literal["critical", "major", "minor"] = Field(..., description="Issue severity")
-
-
-class AuditFix(BaseModel):
-    """Accessibility fix suggestion"""
-    issue_category: str = Field(..., description="Related issue category")
-    fix_description: str = Field(..., description="Fix description")
-    estimated_cost: str = Field(..., description="Estimated cost range")
+    steps: List[NavRouteStep] = Field(default_factory=list, description="Step-by-step directions")
 
 
 class AuditResponse(BaseModel):
     """Accessibility audit response"""
     score: int = Field(..., ge=0, le=100, description="Accessibility score")
-    issues: List[AuditIssue] = Field(default_factory=list, description="List of issues")
-    fixes: List[AuditFix] = Field(default_factory=list, description="Fix suggestions")
-    summary: str = Field(..., description="Overall assessment summary")
+    issues: List[str] = Field(default_factory=list, description="List of accessibility issues")
+    fixes: List[str] = Field(default_factory=list, description="List of recommended fixes")

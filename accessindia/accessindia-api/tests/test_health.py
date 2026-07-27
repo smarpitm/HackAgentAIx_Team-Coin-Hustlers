@@ -1,16 +1,7 @@
-import sys
-import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
-from fastapi.testclient import TestClient
-from app.main import app
-
-client = TestClient(app)
-
-
-def test_health_check():
+def test_health_check(client):
+    """Test health check endpoint returns status ok."""
     response = client.get("/health")
     assert response.status_code == 200
     data = response.json()
-    assert data["status"] == "healthy"
-    assert data["service"] == "AccessIndia AI API"
+    assert data["status"] == "ok"
+    assert data["service"] == "accessindia-ai"

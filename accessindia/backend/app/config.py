@@ -7,6 +7,7 @@ from functools import lru_cache
 from typing import List
 from pydantic import Field, SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+import os
 
 
 class Settings(BaseSettings):
@@ -14,19 +15,19 @@ class Settings(BaseSettings):
     Application settings loaded from environment variables.
     
     Attributes:
-        gemini_api_key: Google Generative AI API key (required)
-        google_maps_api_key: Google Maps API key (required)
+        gemini_api_key: Google Generative AI API key (optional, falls back gracefully)
+        google_maps_api_key: Google Maps API key (optional, falls back gracefully)
         cors_origins: List of allowed CORS origins (default: localhost:5173)
     """
     
-    # API Keys (sensitive - use SecretStr)
+    # API Keys (sensitive - use SecretStr, optional with empty default)
     gemini_api_key: SecretStr = Field(
-        ...,
+        default=SecretStr(""),
         description="Google Generative AI (Gemini) API key - SENSITIVE"
     )
     
     google_maps_api_key: SecretStr = Field(
-        ...,
+        default=SecretStr(""),
         description="Google Maps JavaScript API key - SENSITIVE"
     )
     
@@ -43,14 +44,6 @@ class Settings(BaseSettings):
         case_sensitive=False,
         extra="ignore"
     )
-    
-    @field_validator("gemini_api_key", "google_maps_api_key", mode="before")
-    @classmethod
-    def validate_api_keys_not_empty(cls, v: str, info) -> str:
-        """Validate API keys are not empty or whitespace."""
-        if not v or not v.strip():
-            raise ValueError(f"{info.field_name.upper()} is required and cannot be empty")
-        return v
     
     @field_validator("cors_origins", mode="before")
     @classmethod

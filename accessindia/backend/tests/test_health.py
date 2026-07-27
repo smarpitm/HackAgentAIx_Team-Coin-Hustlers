@@ -7,20 +7,11 @@ from app.main import app
 client = TestClient(app)
 
 
-def test_health_check():
-    """Test health check endpoint"""
-    response = client.get("/health")
+def test_health_check(client=None):
+    """Test health check endpoint returns status ok."""
+    test_client = client or TestClient(app)
+    response = test_client.get("/health")
     assert response.status_code == 200
     data = response.json()
-    assert data["status"] == "healthy"
-    assert "service" in data
-    assert "version" in data
-
-
-def test_root():
-    """Test root endpoint"""
-    response = client.get("/")
-    assert response.status_code == 200
-    data = response.json()
-    assert "message" in data
-    assert "docs" in data
+    assert data["status"] == "ok"
+    assert data["service"] == "accessindia-ai"

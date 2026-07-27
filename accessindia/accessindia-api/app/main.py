@@ -8,15 +8,15 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("accessindia")
 
 app = FastAPI(
-    title="AccessIndia AI API",
-    description="Multi-agent accessibility platform powering vision, speech, gesture, navigation, and audit capabilities.",
+    title="AccessIndia AI",
+    description="Multi-agent accessibility platform",
     version="1.0.0"
 )
 
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.CORS_ORIGINS or ["*"],
+    allow_origins=settings.CORS_ORIGINS.split(","),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -31,13 +31,10 @@ app.include_router(audit.router)
 
 @app.get("/health", tags=["System"])
 async def health_check():
-    """Health check endpoint for checking system status."""
+    """Health check endpoint."""
     return {
-        "status": "healthy",
-        "service": "AccessIndia AI API",
-        "version": "1.0.0",
-        "gemini_api_configured": bool(settings.GEMINI_API_KEY),
-        "maps_api_configured": bool(settings.GOOGLE_MAPS_API_KEY)
+        "status": "ok",
+        "service": "accessindia-ai"
     }
 
 
