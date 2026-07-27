@@ -15,16 +15,16 @@ export function Header() {
 
   return (
     <header
-      className="h-16 bg-slate-800 border-b border-slate-700 flex items-center justify-between px-6 flex-shrink-0"
+      className="h-14 md:h-16 bg-slate-800 border-b border-slate-700 flex items-center justify-between px-4 md:px-6 flex-shrink-0"
       role="banner"
     >
-      <div className="flex items-center gap-3">
-        <Accessibility className="text-orange-500" size={28} aria-hidden="true" />
-        <div>
-          <h1 className="text-lg font-semibold text-zinc-100">
+      <div className="flex items-center gap-2 md:gap-3 min-w-0">
+        <Accessibility className="text-orange-500 flex-shrink-0" size={24} aria-hidden="true" />
+        <div className="min-w-0">
+          <h1 className="text-sm md:text-lg font-semibold text-zinc-100 truncate">
             {TITLES[activeAgent] || 'AI Assistant'}
           </h1>
-          <p className="text-xs text-zinc-400">
+          <p className="text-[10px] md:text-xs text-zinc-400 truncate hidden sm:block">
             AccessIndia AI — Multi-Agent Accessibility Platform
           </p>
         </div>

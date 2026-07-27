@@ -3,12 +3,25 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply bg-slate-900 text-white antialiased;
   }
 
-  button:focus-visible {
+  /* Focus-visible ring for ALL interactive elements (WCAG AA 2.4.7) */
+  *:focus-visible {
     @apply ring-2 ring-orange-500 ring-offset-2 ring-offset-slate-900 outline-none;
+  }
+
+  /* Skip-to-content link (WCAG AA 2.4.1) */
+  .skip-link {
+    @apply absolute -top-10 left-4 z-50 bg-orange-500 text-white px-4 py-2 rounded-b-lg text-sm font-semibold transition-all;
+  }
+  .skip-link:focus {
+    @apply top-0;
   }
 }
 
@@ -23,6 +36,17 @@
 
   .chat-bubble-agent {
     @apply bg-slate-700 rounded-2xl rounded-bl-sm;
+  }
+
+  /* Demo mode badge */
+  .demo-badge {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold;
+    @apply bg-amber-500/20 text-amber-400 border border-amber-500/30;
+  }
+
+  /* Minimum 44px touch targets for mobile (WCAG AA 2.5.5) */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
   }
 }
 
