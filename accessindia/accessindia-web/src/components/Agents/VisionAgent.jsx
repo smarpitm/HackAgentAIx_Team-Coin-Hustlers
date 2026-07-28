@@ -1,129 +1,272 @@
 import React, { useState } from 'react'
-import { Eye, FileText, Sparkles, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react'
+import { Eye, FileText, Image as ImageIcon, Sparkles } from 'lucide-react'
+import FileDrop from '../Shared/FileDrop'
+import TTSButton from '../Shared/TTSButton'
+import LoadingAgent from '../Shared/LoadingAgent'
 import { visionAPI } from '../../services/api'
-import { FileDrop } from '../Shared/FileDrop'
-import { TTSButton } from '../Shared/TTSButton'
-import { VISION_FALLBACK } from '../../data/fallbacks'
 
-export function VisionAgent({ showToast }) {
-  const [result, setResult] = useState(null)
-  const [loading, setLoading] = useState(false)
+/**
+ * VisionAgent Component
+ * 
+ * Image analysis interface for OCR text extraction and scene description.
+ * Upload image → Analyze → Display results (OCR text, description, detected items)
+ * 
+ * Uses Gemini 1.5 Flash Vision via /api/vision/analyze endpoint.
+ */
+const VisionAgent = () => {
+  const [selectedFile, setSelectedFile] = useState(null)
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [results, setResults] = useState(null)
   const [error, setError] = useState(null)
-  const [preview, setPreview] = useState(null)
 
-  const handleFile = async (file) => {
-    if (!file) return
-    setPreview(URL.createObjectURL(file))
-    setResult(null)
+  /**
+   * Handle file selection
+   */
+  const handleFileSelect = (file) => {
+    setSelectedFile(file)
+    setResults(null) // Clear previous results
     setError(null)
-    setLoading(true)
+  }
+
+  /**
+   * Analyze image
+   */
+  const handleAnalyze = async () => {
+    if (!selectedFile) {
+      setError('Please select an image first')
+      return
+    }
+
+    setIsAnalyzing(true)
+    setError(null)
 
     try {
-      const data = await visionAPI.analyzeImage(file)
-      setResult({ ...data, _fallback: false })
+      const data = await visionAPI.analyzeImage(selectedFile)
+      setResults(data)
     } catch (err) {
-      setResult(VISION_FALLBACK)
-      if (showToast) showToast('Vision API unavailable — using demo data', 'success')
+      console.error('Vision analysis error:', err)
+      setError(err.message || 'Failed to analyze image. Please try again.')
     } finally {
-      setLoading(false)
+      setIsAnalyzing(false)
     }
   }
 
+  /**
+   * Clear and start over
+   */
+  const handleClear = () => {
+    setSelectedFile(null)
+    setResults(null)
+    setError(null)
+  }
+
   return (
-    <section className="max-w-5xl mx-auto space-y-4 md:space-y-6" aria-label="Vision Agent">
-      {/* Header */}
-      <div className="agent-card p-4 md:p-6 flex items-center gap-3 md:gap-4 animate-fade-in">
-        <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-400/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400 flex-shrink-0 shadow-lg shadow-cyan-500/10">
-          <Eye className="w-5 md:w-6 h-5 md:h-6" aria-hidden="true" />
+    <div className="min-h-screen bg-slate-900 p-6">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-2">
+            <Eye size={32} className="text-orange-500" aria-hidden="true" />
+            <h1 className="text-3xl font-bold text-white">Vision Agent</h1>
+          </div>
+          <p className="text-zinc-400">
+            Extract text from images, get scene descriptions, and identify objects using AI vision analysis.
+          </p>
         </div>
-        <div className="min-w-0">
-          <h2 className="text-base md:text-lg font-bold text-white">Vision Agent</h2>
-          <p className="text-[11px] md:text-xs text-slate-400">Extract OCR text, scene descriptions, and detect objects using Gemini Vision.</p>
-        </div>
-        {result?._fallback && <span className="demo-badge flex-shrink-0">Demo</span>}
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-        {/* Left: Upload */}
-        <div className="agent-card p-4 md:p-5 space-y-4 animate-slide-in">
-          <h3 className="text-sm font-semibold text-slate-200 flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-cyan-400"></span>
-            Upload Image
-          </h3>
-          <FileDrop onFileSelected={handleFile} title="Drop image here" description="JPEG or PNG supported" />
-          {preview && !loading && (
-            <div className="relative group">
-              <img src={preview} alt="Uploaded image preview for vision analysis" className="w-full h-40 md:h-48 object-cover rounded-xl border border-slate-700 transition-all duration-300 group-hover:border-cyan-500/50" />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            </div>
-          )}
-          {loading && (
-            <div className="flex flex-col items-center justify-center py-6 md:py-8 space-y-3">
-              <div className="relative">
-                <div className="w-12 h-12 border-4 border-cyan-500/20 border-t-cyan-500 rounded-full animate-spin"></div>
-                <Loader2 className="w-5 h-5 text-cyan-400 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" aria-label="Analyzing image" />
+        {/* File Upload Section */}
+        {!results && (
+          <div className="bg-slate-800 rounded-lg p-6 mb-6">
+            <h2 className="text-xl font-semibold text-white mb-4">
+              Upload Image
+            </h2>
+            
+            <FileDrop 
+              onFileSelect={handleFileSelect}
+              acceptedTypes="image/jpeg,image/png"
+              maxSizeMB={4}
+            />
+
+            {selectedFile && !isAnalyzing && (
+              <div className="mt-6 flex gap-3">
+                <button
+                  onClick={handleAnalyze}
+                  className="
+                    flex-1 flex items-center justify-center gap-2 px-6 py-3
+                    bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-medium
+                    transition-colors duration-200
+                    focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-900
+                  "
+                  aria-label="Analyze image"
+                >
+                  <Sparkles size={20} aria-hidden="true" />
+                  <span>Analyze Image</span>
+                </button>
+
+                <button
+                  onClick={handleClear}
+                  className="
+                    px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg
+                    transition-colors duration-200
+                    focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-900
+                  "
+                  aria-label="Clear and upload new image"
+                >
+                  Clear
+                </button>
               </div>
-              <p className="text-sm text-cyan-400 animate-pulse">Analyzing image...</p>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
 
-        {/* Right: Results */}
-        <div className="space-y-3 md:space-y-4">
-          {error && (
-            <div className="bg-rose-500/10 border border-rose-500/30 text-rose-400 p-3 md:p-4 rounded-2xl text-sm flex items-center gap-3 animate-fade-in" role="alert">
-              <AlertCircle className="w-5 h-5 flex-shrink-0" aria-hidden="true" />
-              <span>{error}</span>
-            </div>
-          )}
+        {/* Loading State */}
+        {isAnalyzing && (
+          <div className="bg-slate-800 rounded-lg p-12">
+            <LoadingAgent agentName="Vision Agent" message="Vision Agent is analyzing your image" />
+          </div>
+        )}
 
-          {result && (
-            <>
-              <div className="agent-card p-4 md:p-5 space-y-3 animate-fade-in">
-                <div className="flex items-center justify-between border-b border-slate-700 pb-3 flex-wrap gap-2">
-                  <div className="flex items-center gap-2 text-cyan-400 font-semibold text-sm">
-                    <FileText className="w-4 h-4" aria-hidden="true" />
-                    <span>Extracted Text</span>
+        {/* Error State */}
+        {error && (
+          <div role="alert" className="bg-red-500/10 border border-red-500 rounded-lg p-4 mb-6">
+            <p className="text-red-400 font-medium mb-1">Analysis Failed</p>
+            <p className="text-red-300 text-sm">{error}</p>
+            <button
+              onClick={handleClear}
+              className="mt-3 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded-lg text-sm transition-colors"
+            >
+              Try Again
+            </button>
+          </div>
+        )}
+
+        {/* Results Section */}
+        {results && (
+          <div className="space-y-6">
+            {/* Success Badge */}
+            <div className="flex items-center justify-between bg-green-500/10 border border-green-500 rounded-lg p-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
+                  <Eye size={20} className="text-white" aria-hidden="true" />
+                </div>
+                <div>
+                  <p className="text-green-400 font-medium">Analysis Complete</p>
+                  <p className="text-green-300 text-sm">
+                    Confidence: {Math.round((results.confidence || 0.9) * 100)}%
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={handleClear}
+                className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-sm transition-colors"
+                aria-label="Analyze another image"
+              >
+                Analyze Another
+              </button>
+            </div>
+
+            {/* OCR Text Section */}
+            {results.ocr_text && (
+              <div className="bg-slate-800 rounded-lg p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <FileText size={24} className="text-orange-500" aria-hidden="true" />
+                    <h2 className="text-xl font-semibold text-white">
+                      Extracted Text (OCR)
+                    </h2>
                   </div>
-                  <TTSButton text={result.ocr_text || result.description} label="Read Aloud" />
+                  <TTSButton text={results.ocr_text} label="Read extracted text aloud" />
                 </div>
-                <p className="text-sm text-slate-200 leading-relaxed font-mono bg-slate-900/60 p-3 rounded-xl border border-slate-800">
-                  {result.ocr_text || 'No text detected.'}
-                </p>
-              </div>
-
-              <div className="agent-card p-4 md:p-5 space-y-3 animate-fade-in" style={{ animationDelay: '100ms' }}>
-                <div className="flex items-center justify-between border-b border-slate-700 pb-3 flex-wrap gap-2">
-                  <h4 className="text-xs font-semibold uppercase text-slate-400 tracking-wider">Scene Description</h4>
-                  <TTSButton text={result.description} label="Describe Aloud" />
+                
+                <div className="bg-slate-900 rounded-lg p-4 border border-slate-700">
+                  <p className="text-zinc-200 whitespace-pre-wrap leading-relaxed">
+                    {results.ocr_text || 'No text detected in image'}
+                  </p>
                 </div>
-                <p className="text-sm text-slate-200 leading-relaxed">{result.description}</p>
               </div>
+            )}
 
-              <div className="agent-card p-4 md:p-5 space-y-3 animate-fade-in" style={{ animationDelay: '200ms' }}>
-                <h4 className="text-xs font-semibold uppercase text-slate-400 tracking-wider">Detected Objects</h4>
+            {/* Scene Description Section */}
+            {results.description && (
+              <div className="bg-slate-800 rounded-lg p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <ImageIcon size={24} className="text-orange-500" aria-hidden="true" />
+                    <h2 className="text-xl font-semibold text-white">
+                      Scene Description
+                    </h2>
+                  </div>
+                  <TTSButton text={results.description} label="Read scene description aloud" />
+                </div>
+                
+                <div className="bg-slate-900 rounded-lg p-4 border border-slate-700">
+                  <p className="text-zinc-200 leading-relaxed">
+                    {results.description || 'No description available'}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Detected Items Section */}
+            {results.detected_items && results.detected_items.length > 0 && (
+              <div className="bg-slate-800 rounded-lg p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <Sparkles size={24} className="text-orange-500" aria-hidden="true" />
+                  <h2 className="text-xl font-semibold text-white">
+                    Detected Objects
+                  </h2>
+                </div>
+                
                 <div className="flex flex-wrap gap-2">
-                  {result.detected_items?.map((item, idx) => (
-                    <span key={idx} className="px-3 py-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-medium flex items-center gap-1.5 hover:bg-cyan-500/20 transition-colors">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400" aria-hidden="true" />
+                  {results.detected_items.map((item, index) => (
+                    <span
+                      key={index}
+                      className="px-3 py-1.5 bg-orange-500/20 border border-orange-500/50 text-orange-400 rounded-full text-sm"
+                    >
                       {item}
                     </span>
                   ))}
                 </div>
               </div>
-            </>
-          )}
+            )}
 
-          {!result && !error && !loading && (
-            <div className="agent-card p-8 md:p-12 text-center text-slate-500 animate-fade-in">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-slate-800/50 flex items-center justify-center">
-                <Eye className="w-8 md:w-10 h-8 md:h-10 opacity-30" aria-hidden="true" />
-              </div>
-              <p className="text-sm">Upload an image to analyze.</p>
+            {/* Read All Button */}
+            <div className="flex justify-center">
+              <TTSButton 
+                text={`
+                  Extracted text: ${results.ocr_text || 'None'}. 
+                  Scene description: ${results.description || 'None'}. 
+                  Detected objects: ${results.detected_items?.join(', ') || 'None'}.
+                `}
+                label="Read complete analysis aloud"
+                className="px-8 py-3 text-base"
+              />
             </div>
-          )}
-        </div>
+          </div>
+        )}
+
+        {/* Instructions */}
+        {!selectedFile && !results && (
+          <div className="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+            <h3 className="text-white font-medium mb-3">How to use:</h3>
+            <ol className="space-y-2 text-zinc-400 text-sm list-decimal list-inside">
+              <li>Upload an image containing text, signs, or objects you want to identify</li>
+              <li>Click "Analyze Image" to process with AI vision</li>
+              <li>Review extracted text, scene description, and detected objects</li>
+              <li>Use "Read Aloud" buttons to hear results via text-to-speech</li>
+            </ol>
+            
+            <div className="mt-4 p-3 bg-orange-500/10 border border-orange-500/30 rounded-lg">
+              <p className="text-orange-400 text-sm">
+                <strong>💡 Tip:</strong> For best OCR results, ensure text is clear and well-lit. 
+                Works with signboards, documents, medicine labels, and more.
+              </p>
+            </div>
+          </div>
+        )}
       </div>
-    </section>
+    </div>
   )
 }
+
+export default VisionAgent

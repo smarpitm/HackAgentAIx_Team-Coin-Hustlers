@@ -1,8 +1,18 @@
 import React from 'react'
 import { Volume2, VolumeX } from 'lucide-react'
-import { useTextToSpeech } from '../../hooks/useTextToSpeech'
+import useTextToSpeech from '../../hooks/useTextToSpeech'
 
-export function TTSButton({ text, className = '', label = 'Listen' }) {
+/**
+ * TTSButton Component
+ * 
+ * Text-to-speech button that reads text aloud.
+ * Shows animated icon when speaking.
+ * 
+ * @param {String} text - Text to read aloud
+ * @param {String} label - Accessible label (default: "Read aloud")
+ * @param {String} className - Additional CSS classes
+ */
+const TTSButton = ({ text, label = "Read aloud", className = "" }) => {
   const { speak, cancel, speaking } = useTextToSpeech()
 
   const handleClick = () => {
@@ -13,29 +23,46 @@ export function TTSButton({ text, className = '', label = 'Listen' }) {
     }
   }
 
+  if (!text) {
+    return null
+  }
+
   return (
     <button
       onClick={handleClick}
+      aria-label={speaking ? "Stop reading" : label}
+      className={`
+        inline-flex items-center gap-2 px-3 py-2 
+        bg-slate-700 hover:bg-slate-600 
+        text-zinc-100 rounded-lg 
+        transition-colors duration-200
+        focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-900
+        disabled:opacity-50 disabled:cursor-not-allowed
+        ${className}
+      `}
       disabled={!text}
-      className={`touch-target inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all duration-300 ${
-        speaking
-          ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white animate-pulse shadow-lg shadow-orange-500/30 hover:shadow-orange-500/40'
-          : 'bg-slate-800/80 backdrop-blur-sm hover:bg-slate-700 text-slate-200 border border-slate-700 hover:border-orange-500/50 hover:shadow-md'
-      } ${className}`}
-      aria-label={speaking ? 'Stop reading aloud' : `${label} — text to speech`}
-      title={speaking ? 'Stop Speech' : 'Read Aloud with TTS'}
     >
       {speaking ? (
         <>
-          <VolumeX className="w-4 h-4" aria-hidden="true" />
-          <span>Stop</span>
+          <VolumeX 
+            size={20} 
+            className="animate-pulse text-orange-500" 
+            aria-hidden="true"
+          />
+          <span className="text-sm">Stop</span>
         </>
       ) : (
         <>
-          <Volume2 className="w-4 h-4" aria-hidden="true" />
-          <span>{label}</span>
+          <Volume2 
+            size={20} 
+            className="text-orange-500" 
+            aria-hidden="true"
+          />
+          <span className="text-sm">Read Aloud</span>
         </>
       )}
     </button>
   )
 }
+
+export { TTSButton }

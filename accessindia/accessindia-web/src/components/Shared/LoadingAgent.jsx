@@ -1,26 +1,54 @@
 import React from 'react'
-import { Cpu, Sparkles } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 
-export function LoadingAgent({ agentName = 'Orchestrator Agent' }) {
+/**
+ * LoadingAgent Component
+ * 
+ * Loading indicator with agent name and animated dots.
+ * Accessible with role="status" and aria-live="polite".
+ * 
+ * @param {String} agentName - Name of agent (e.g., "Vision Agent")
+ * @param {String} message - Custom loading message (optional)
+ * @param {String} className - Additional CSS classes
+ */
+const LoadingAgent = ({ 
+  agentName = "Agent", 
+  message = null,
+  className = "" 
+}) => {
+  const displayMessage = message || `${agentName} is analyzing`
+
   return (
-    <div className="flex items-center gap-3 p-3 md:p-4 rounded-2xl bg-slate-800/60 backdrop-blur-sm border border-slate-700/60 max-w-md my-2 animate-fade-in shadow-lg" role="status" aria-live="polite" aria-label={`${agentName} is processing your request`}>
-      <div className="relative">
-        <div className="w-8 h-8 md:w-9 md:h-9 rounded-xl bg-gradient-to-br from-orange-500/20 to-amber-400/20 border border-orange-500/30 flex items-center justify-center text-orange-400 flex-shrink-0">
-          <Cpu className="w-5 h-5 animate-spin" aria-hidden="true" />
-        </div>
-        <div className="absolute inset-0 rounded-xl bg-orange-500/20 animate-ping opacity-30"></div>
+    <div 
+      role="status" 
+      aria-live="polite"
+      className={`flex flex-col items-center justify-center gap-4 p-8 ${className}`}
+    >
+      {/* Spinning loader icon */}
+      <Loader2 
+        size={48} 
+        className="text-orange-500 animate-spin" 
+        aria-hidden="true"
+      />
+      
+      {/* Loading text with animated dots */}
+      <div className="flex items-center gap-1">
+        <span className="text-zinc-300 text-lg font-medium">
+          {displayMessage}
+        </span>
+        <span className="flex gap-1" aria-hidden="true">
+          <span className="animate-bounce" style={{ animationDelay: '0ms' }}>.</span>
+          <span className="animate-bounce" style={{ animationDelay: '150ms' }}>.</span>
+          <span className="animate-bounce" style={{ animationDelay: '300ms' }}>.</span>
+        </span>
       </div>
-      <div className="min-w-0">
-        <p className="text-xs font-semibold text-orange-400 flex items-center gap-1.5">
-          <Sparkles className="w-3.5 h-3.5 animate-pulse" aria-hidden="true" />
-          <span>{agentName} processing...</span>
-        </p>
-        <div className="flex items-center gap-1 mt-1" aria-hidden="true">
-          <span className="w-2 h-2 rounded-full bg-gradient-to-r from-orange-400 to-amber-400 animate-bounce shadow-lg shadow-orange-400/50"></span>
-          <span className="w-2 h-2 rounded-full bg-gradient-to-r from-orange-400 to-amber-400 animate-bounce [animation-delay:0.2s] shadow-lg shadow-orange-400/50"></span>
-          <span className="w-2 h-2 rounded-full bg-gradient-to-r from-orange-400 to-amber-400 animate-bounce [animation-delay:0.4s] shadow-lg shadow-orange-400/50"></span>
-        </div>
-      </div>
+
+      {/* Screen reader text */}
+      <span className="sr-only">
+        {displayMessage}, please wait
+      </span>
     </div>
   )
 }
+
+export { LoadingAgent }
