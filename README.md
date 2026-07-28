@@ -24,13 +24,9 @@
   <img src="https://img.shields.io/badge/Maps_&_Routing-100%25_Free-success?style=flat-square" />
 </p>
 
----
-
 ## 🏆 Team Coin Hustlers
 
 > *Building technology that breaks barriers, not people.*
-
----
 
 ## 🧠 What is AccessIndia AI?
 
@@ -41,8 +37,6 @@
 - 🗺️ **Navigate** — Find wheelchair-accessible walking routes and nearby accessible hospitals, pharmacies, and transit stops
 - 📋 **Audit** — Evaluate buildings against India's **RPwD Act 2016** and **CPWD Barrier-Free Guidelines** using just a photo
 - 🤖 **Orchestrate** — A central AI brain that understands user intent and automatically routes requests to the right specialist agent
-
----
 
 ## 🏗️ Architecture Overview
 
@@ -85,8 +79,6 @@
 │                                                             │
 └─────────────────────────────────────────────────────────────┘
 ```
-
----
 
 ## 🤖 The Five Agents
 
@@ -147,8 +139,6 @@ Evaluates building photos against India's **RPwD Act 2016** and **CPWD Harmonise
 - TTS "Read Report" for full audit summary
 - Animated score progress bar
 
----
-
 ## ♿ Accessibility Compliance (WCAG AA)
 
 AccessIndia AI is built **accessibility-first**:
@@ -163,8 +153,6 @@ AccessIndia AI is built **accessibility-first**:
 | **WCAG 4.1.2** ARIA Labels | All icon buttons have descriptive `aria-label` attributes |
 | **WCAG 1.1.1** Alt Text | All images have meaningful `alt` descriptions |
 | **Screen Reader** | `aria-live` regions for dynamic content updates |
-
----
 
 ## 🛠️ Tech Stack
 
@@ -186,8 +174,6 @@ AccessIndia AI is built **accessibility-first**:
 | **Hand Tracking** | MediaPipe Hands | Real-time hand landmark detection |
 | **Speech** | Web Speech API | Browser-native STT & TTS |
 | **Testing** | Vitest + Pytest | Frontend & backend test suites |
-
----
 
 ## 🚀 Quick Start
 
@@ -235,8 +221,6 @@ npm run dev
 
 Frontend runs at `http://localhost:5173`
 
----
-
 ## 🧪 Testing
 
 ### Backend (Pytest) — 13 tests
@@ -268,8 +252,6 @@ useSpeechToText.test.js    ✅ 3 passed
 VisionAgent.test.jsx       ✅ 3 passed
 App.test.jsx               ✅ 3 passed
 ```
-
----
 
 ## 📁 Project Structure
 
@@ -335,8 +317,6 @@ accessindia/
 │   └── package.json
 ```
 
----
-
 ## 🌐 API Endpoints
 
 | Method | Endpoint | Description |
@@ -347,8 +327,6 @@ accessindia/
 | `POST` | `/api/nav/route` | Navigation — walking route via OSRM |
 | `GET` | `/api/nav/nearby` | Navigation — nearby accessible facilities |
 | `POST` | `/api/audit/analyze` | Audit — RPwD compliance score from building photo |
-
----
 
 ## 💰 Cost Breakdown
 
@@ -365,8 +343,6 @@ accessindia/
 
 > **Total running cost: $0/month** (only Gemini API key required, free tier is sufficient)
 
----
-
 ## 📜 Regulatory Alignment
 
 This platform is built in alignment with:
@@ -374,8 +350,6 @@ This platform is built in alignment with:
 - **🇮🇳 Rights of Persons with Disabilities (RPwD) Act, 2016** — India's landmark disability rights legislation mandating accessibility in public buildings, transport, and digital services.
 - **🏗️ CPWD Harmonised Guidelines for Barrier-Free Built Environment** — India's architectural standards for ramp gradients (≤1:12), door widths (≥900mm), tactile paving, handrail heights, and elevator accessibility.
 - **🌐 WCAG 2.1 Level AA** — Web Content Accessibility Guidelines ensuring the platform itself is usable by persons with disabilities.
-
----
 
 <p align="center">
   <b>Built with ❤️ by Team Coin Hustlers</b><br/>
