@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { Eye, FileText, Image as ImageIcon, Sparkles } from 'lucide-react'
-import FileDrop from '../Shared/FileDrop'
-import TTSButton from '../Shared/TTSButton'
-import LoadingAgent from '../Shared/LoadingAgent'
+import { FileDrop } from '../Shared/FileDrop'
+import { TTSButton } from '../Shared/TTSButton'
+import { LoadingAgent } from '../Shared/LoadingAgent'
 import { visionAPI } from '../../services/api'
 
 /**

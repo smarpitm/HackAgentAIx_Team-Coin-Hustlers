@@ -150,7 +150,7 @@ const useSpeechToText = () => {
         try {
           // Send to backend for Gemini transcription
           const formData = new FormData()
-          formData.append('audio', audioBlob, 'recording.webm')
+          formData.append('file', audioBlob, 'recording.webm')
 
           const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
           const response = await axios.post(`${API_URL}/api/speech/transcribe`, formData, {
@@ -218,6 +218,13 @@ const useSpeechToText = () => {
     setError(null)
   }
 
+  /**
+   * Clear error message
+   */
+  const clearError = () => {
+    setError(null)
+  }
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
@@ -242,6 +249,7 @@ const useSpeechToText = () => {
     startListening: start,
     stopListening: stop,
     reset,
+    clearError,
     error,
     engine
   }
