@@ -219,3 +219,5 @@ export function CommunicationAgent({ showToast }) {
     </section>
   )
 }
+
+export default CommunicationAgent

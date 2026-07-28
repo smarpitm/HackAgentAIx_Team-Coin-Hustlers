@@ -104,8 +104,10 @@ const useTextToSpeech = () => {
   return {
     speak,
     cancel,
+    stop: cancel,
     speaking
   }
 }
 
+export { useTextToSpeech }
 export default useTextToSpeech

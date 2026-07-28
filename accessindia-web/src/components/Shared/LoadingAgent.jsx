@@ -52,3 +52,4 @@ const LoadingAgent = ({
 }
 
 export { LoadingAgent }
+export default LoadingAgent

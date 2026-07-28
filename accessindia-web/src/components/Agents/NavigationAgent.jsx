@@ -347,3 +347,5 @@ export function NavigationAgent({ showToast }) {
     </section>
   )
 }
+
+export default NavigationAgent

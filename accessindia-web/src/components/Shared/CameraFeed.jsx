@@ -253,3 +253,4 @@ const CameraFeed = ({
 }
 
 export { CameraFeed }
+export default CameraFeed

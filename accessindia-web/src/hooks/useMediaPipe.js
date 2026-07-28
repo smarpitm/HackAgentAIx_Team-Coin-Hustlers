@@ -193,4 +193,5 @@ const useMediaPipe = (videoRef, options = {}) => {
   }
 }
 
+export { useMediaPipe }
 export default useMediaPipe

@@ -159,3 +159,5 @@ export function AuditAgent({ showToast }) {
     </section>
   )
 }
+
+export default AuditAgent

@@ -13,8 +13,8 @@ describe('VisionAgent', () => {
     expect(screen.getByText('Upload Image')).toBeTruthy()
   })
 
-  it('renders the empty state message', () => {
+  it('renders the description subtitle', () => {
     render(<VisionAgent />)
-    expect(screen.getByText('Upload an image to analyze.')).toBeTruthy()
+    expect(screen.getByText(/Extract text from images/i)).toBeTruthy()
   })
 })

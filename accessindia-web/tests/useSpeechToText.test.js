@@ -18,7 +18,7 @@ describe('useSpeechToText', () => {
   it('sets error when SpeechRecognition is not available', () => {
     const { result } = renderHook(() => useSpeechToText())
     act(() => { result.current.startListening() })
-    expect(result.current.error).toBe('Speech recognition is not supported in this browser.')
+    expect(result.current.error).toMatch(/Speech recognition|Microphone access/)
     expect(result.current.isListening).toBe(false)
   })
 

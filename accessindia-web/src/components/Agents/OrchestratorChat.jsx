@@ -187,3 +187,5 @@ export function OrchestratorChat({ showToast }) {
     </section>
   )
 }
+
+export default OrchestratorChat

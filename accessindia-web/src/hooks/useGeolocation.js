@@ -85,4 +85,5 @@ const useGeolocation = () => {
   }
 }
 
+export { useGeolocation }
 export default useGeolocation

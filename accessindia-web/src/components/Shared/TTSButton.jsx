@@ -66,3 +66,4 @@ const TTSButton = ({ text, label = "Read aloud", className = "" }) => {
 }
 
 export { TTSButton }
+export default TTSButton

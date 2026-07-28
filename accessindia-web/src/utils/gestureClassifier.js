@@ -13,6 +13,19 @@
  * 17-20: Pinky
  */
 
+export const GESTURES = [
+  { name: 'hello', label: '👋 Hello', description: 'Open hand wave' },
+  { name: 'help', label: '🆘 Help', description: 'Raised hand' },
+  { name: 'yes', label: '👍 Yes', description: 'Thumbs up' },
+  { name: 'no', label: '👎 No', description: 'Thumbs down' },
+  { name: 'thank_you', label: '🙏 Thank You', description: 'Palms together' },
+  { name: 'eat', label: '🍽️ Eat', description: 'Fingertips to mouth' },
+  { name: 'drink', label: '🥤 Drink', description: 'C-shape to mouth' },
+  { name: 'stop', label: '✋ Stop', description: 'Flat palm forward' },
+  { name: 'go', label: '👉 Go', description: 'Pointing forward' },
+  { name: 'bathroom', label: '🚻 Bathroom', description: 'T-shape gesture' }
+]
+
 /**
  * Calculate Euclidean distance between two landmarks
  */

@@ -239,10 +239,13 @@ const useSpeechToText = () => {
     isListening,
     start,
     stop,
+    startListening: start,
+    stopListening: stop,
     reset,
     error,
     engine
   }
 }
 
+export { useSpeechToText }
 export default useSpeechToText

@@ -238,3 +238,4 @@ const FileDrop = ({
 }
 
 export { FileDrop }
+export default FileDrop
