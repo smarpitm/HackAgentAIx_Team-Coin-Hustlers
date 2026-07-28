@@ -124,10 +124,27 @@ export function OrchestratorChat({ showToast }) {
         </div>
       )}
       {sttError && (
-        <div className="px-3 md:px-4 py-2 bg-rose-500/10 border border-rose-500/30 rounded-xl mb-2 text-sm text-rose-400 animate-fade-in" role="alert">
-          ⚠️ {sttError}
+        <div className="px-3 md:px-4 py-2 bg-rose-500/10 border border-rose-500/30 rounded-xl mb-2 text-sm text-rose-400 animate-fade-in flex items-center justify-between gap-2" role="alert">
+          <span>⚠️ {sttError}</span>
         </div>
       )}
+
+      {/* Quick Voice Sample Chips */}
+      <div className="flex flex-wrap gap-2 mb-2 px-1">
+        {[
+          '🎤 Is the main entrance accessible?',
+          '📍 Find nearby hospital with ramp',
+          '📋 Audit building ramp slope',
+        ].map((sample, idx) => (
+          <button
+            key={idx}
+            onClick={() => setInput(sample.replace(/^🎤\s*|^\📍\s*|^\📋\s*/, ''))}
+            className="text-[11px] px-2.5 py-1 rounded-full bg-slate-800/80 hover:bg-orange-500/20 text-slate-400 hover:text-orange-300 border border-slate-700 hover:border-orange-500/40 transition-all cursor-pointer"
+          >
+            {sample}
+          </button>
+        ))}
+      </div>
 
       {/* Input Area */}
       <div className="flex items-center gap-2 md:gap-3 bg-slate-800/80 backdrop-blur-sm border border-slate-700 rounded-2xl p-2 md:p-3 shadow-lg">

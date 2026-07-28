@@ -1,5 +1,12 @@
 import { useState, useRef, useCallback } from 'react'
 
+const DEMO_VOICE_SAMPLES = [
+  'Is the main entrance accessible for wheelchairs?',
+  'Find nearby accessible hospital with ramp entrance',
+  'Read the text on this signboard for me',
+  'Audit the entrance ramp slope and handrail compliance',
+]
+
 export const useSpeechToText = () => {
   const [isListening, setIsListening] = useState(false)
   const [transcript, setTranscript] = useState('')
@@ -10,10 +17,11 @@ export const useSpeechToText = () => {
   const startListening = useCallback(() => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
 
+    const sampleQuery = DEMO_VOICE_SAMPLES[Math.floor(Math.random() * DEMO_VOICE_SAMPLES.length)]
+
     if (!SpeechRecognition) {
       setError('Speech recognition is not supported in this browser.')
-      // Fallback demo transcript for unsupported browsers / environment
-      setTranscript('Is the main entrance accessible for wheelchairs?')
+      setTranscript(sampleQuery)
       return
     }
 
@@ -39,10 +47,10 @@ export const useSpeechToText = () => {
         }
 
         const friendlyMessages = {
-          'not-allowed': 'Microphone access denied. Please allow microphone permissions in browser settings.',
-          'service-not-allowed': 'Speech recognition service blocked by browser.',
-          'audio-capture': 'No microphone detected on your device.',
-          'network': 'Network error during speech recognition.',
+          'not-allowed': 'Microphone access denied in browser settings. Loaded demo voice input.',
+          'service-not-allowed': 'Speech recognition service blocked by browser. Loaded demo voice input.',
+          'audio-capture': 'No microphone detected on your device. Loaded demo voice input.',
+          'network': 'Google speech service network unreachable. Loaded demo voice input.',
           'aborted': 'Speech input was stopped.',
         }
 
@@ -50,9 +58,9 @@ export const useSpeechToText = () => {
         setError(errorMsg)
         setIsListening(false)
 
-        // Demo fallback on permission error
-        if (errorKey === 'not-allowed' || errorKey === 'audio-capture') {
-          setTranscript('Is the main entrance accessible for wheelchairs?')
+        // Automatically set sample transcript when cloud speech API is blocked or errored
+        if (['not-allowed', 'audio-capture', 'network', 'service-not-allowed'].includes(errorKey)) {
+          setTranscript(sampleQuery)
         }
       }
 
@@ -67,7 +75,8 @@ export const useSpeechToText = () => {
       setTranscript('')
     } catch (err) {
       console.error('Speech recognition start failed:', err)
-      setError('Failed to start speech recognition. Please try again.')
+      setError('Failed to start speech recognition. Loaded demo voice input.')
+      setTranscript(sampleQuery)
       setIsListening(false)
     }
   }, [])
