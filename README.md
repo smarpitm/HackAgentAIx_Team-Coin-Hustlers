@@ -52,38 +52,38 @@
 ├─────────────────────────────────────────────────────────────┤
 │                                                             │
 │  ┌─────────────────────────────────────────────────────┐    │
-│  │              React 18 Web Client                     │    │
+│  │              React 18 Web Client                    │    │
 │  │  ┌──────────┐ ┌──────────┐ ┌──────────────────────┐ │    │
 │  │  │ Sidebar  │ │  Header  │ │  Mobile Bottom Nav   │ │    │
 │  │  └──────────┘ └──────────┘ └──────────────────────┘ │    │
-│  │                                                      │    │
+│  │                                                     │    │
 │  │  ┌──────────────────────────────────────────────┐   │    │
-│  │  │            5 Agent Views (Routes)             │   │    │
+│  │  │            5 Agent Views (Routes)            │   │    │
 │  │  │  / Chat  /vision  /communication             │   │    │
-│  │  │          /navigation  /audit                  │   │    │
+│  │  │          /navigation  /audit                 │   │    │
 │  │  └──────────────────────────────────────────────┘   │    │
-│  │                                                      │    │
-│  │  Shared: TTSButton │ FileDrop │ CameraFeed │ Loading │    │
-│  │  Hooks:  useSpeechToText (Dual Engine)               │    │
-│  │          useTextToSpeech │ useMediaPipe │useGeolocation│    │
+│  │                                                     │    │
+│  │ Shared: TTSButton │ FileDrop │ CameraFeed │ Loading │    │
+│  │ Hooks:  useSpeechToText (Dual Engine)               │    │
+│  │       useTextToSpeech │ useMediaPipe │useGeolocation│    │
 │  │  State:  Zustand (useAppStore)                      │    │
 │  └─────────────────────────────────────────────────────┘    │
-│                           │ Axios                            │
-│                           ▼                                  │
+│                           │ Axios                           │
+│                           ▼                                 │
 │  ┌─────────────────────────────────────────────────────┐    │
-│  │              FastAPI Backend (Python)                │    │
-│  │                                                      │    │
+│  │              FastAPI Backend (Python)               │    │
+│  │                                                     |    │
 │  │  Routers:  /api/chat  /api/vision/analyze           │    │
-│  │            /api/speech/transcribe                    │    │
-│  │            /api/nav/route  /api/nav/nearby           │    │
-│  │            /api/audit/analyze  /health               │    │
-│  │                                                      │    │
-│  │  Agents:   Orchestrator │ Vision │ Navigation │ Audit│    │
-│  │                                                      │    │
-│  │  AI:       Google Gemini 2.5 Flash (Text, Vision, Audio)│
+│  │            /api/speech/transcribe                   │    │
+│  │            /api/nav/route  /api/nav/nearby          │    │
+│  │            /api/audit/analyze  /health              │    │
+│  │                                                     │    │
+│  │  Agents:  Orchestrator │ Vision │ Navigation │ Audit│    │
+│  │                                                     │    │
+│  │  AI:   Google Gemini 2.5 Flash (Text, Vision, Audio)│    |
 │  │  Maps:     Nominatim + OSRM + Overpass (all free)   │    │
 │  └─────────────────────────────────────────────────────┘    │
-│                                                              │
+│                                                             │
 └─────────────────────────────────────────────────────────────┘
 ```
 
