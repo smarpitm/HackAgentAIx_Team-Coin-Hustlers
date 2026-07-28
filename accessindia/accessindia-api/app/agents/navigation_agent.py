@@ -1,4 +1,5 @@
 import logging
+import math
 from typing import List, Dict, Any
 
 import requests
@@ -7,58 +8,147 @@ from app.models import NavRouteRequest, NavRouteResponse, NavRouteStep
 
 logger = logging.getLogger(__name__)
 
+# Headers required by Nominatim usage policy
+NOMINATIM_HEADERS = {
+    "User-Agent": "AccessIndiaAI/1.0 (accessibility-hackathon)"
+}
+
 
 class NavigationAgent:
-    """Navigation Agent for AccessIndia AI — provides accessible routes and nearby facility search."""
+    """Navigation Agent for AccessIndia AI — provides accessible routes and nearby facility search
+    using OpenStreetMap Nominatim (geocoding) and OSRM (routing). 100% free, no API key required."""
+
+    def _geocode(self, place_name: str) -> dict | None:
+        """Geocode a place name to lat/lng using Nominatim."""
+        try:
+            url = "https://nominatim.openstreetmap.org/search"
+            params = {
+                "q": place_name,
+                "format": "json",
+                "limit": 1,
+                "countrycodes": "in",  # Bias results to India
+            }
+            res = requests.get(url, params=params, headers=NOMINATIM_HEADERS, timeout=5)
+            data = res.json()
+            if data and len(data) > 0:
+                return {
+                    "lat": float(data[0]["lat"]),
+                    "lng": float(data[0]["lon"]),
+                    "display_name": data[0].get("display_name", place_name),
+                }
+        except Exception as e:
+            logger.warning(f"Nominatim geocoding error: {e}")
+        return None
 
     def get_route(self, req: NavRouteRequest) -> NavRouteResponse:
-        """Get accessible route using Google Maps Directions API.
+        """Get accessible walking route using OSRM (Open Source Routing Machine).
 
-        Calls Google Maps Directions API with the given origin/destination.
-        Falls back to mock data (2.3km, 28min, 5 steps) on failure.
+        1. Geocodes destination via Nominatim
+        2. Queries OSRM for walking route with step-by-step instructions
+        3. Falls back to mock data on failure
 
         Args:
             req: NavRouteRequest with origin_lat, origin_lng, destination, mode
 
         Returns:
-            NavRouteResponse with distance, duration, steps
+            NavRouteResponse with distance, duration, steps, and optional route_coords/dest coords
         """
-        if settings.GOOGLE_MAPS_API_KEY:
-            try:
-                url = "https://maps.googleapis.com/maps/api/directions/json"
-                params = {
-                    "origin": f"{req.origin_lat},{req.origin_lng}",
-                    "destination": req.destination,
-                    "mode": req.mode,
-                    "key": settings.GOOGLE_MAPS_API_KEY
-                }
-                res = requests.get(url, params=params, timeout=5)
-                data = res.json()
+        try:
+            # Step 1: Geocode destination
+            dest = self._geocode(req.destination)
+            if not dest:
+                logger.warning(f"Could not geocode destination: {req.destination}")
+                return self._fallback_route()
 
-                if data.get("status") == "OK" and len(data.get("routes", [])) > 0:
-                    route = data["routes"][0]
-                    leg = route["legs"][0]
-                    steps = []
+            # Step 2: Query OSRM for walking route
+            profile = "foot" if req.mode == "walking" else "car"
+            osrm_url = (
+                f"https://router.project-osrm.org/route/v1/{profile}/"
+                f"{req.origin_lng},{req.origin_lat};{dest['lng']},{dest['lat']}"
+            )
+            params = {
+                "overview": "full",
+                "geometries": "geojson",
+                "steps": "true",
+            }
+            res = requests.get(osrm_url, params=params, timeout=8)
+            data = res.json()
+
+            if data.get("code") == "Ok" and data.get("routes"):
+                osrm_route = data["routes"][0]
+                total_distance_m = osrm_route.get("distance", 0)
+                total_duration_s = osrm_route.get("duration", 0)
+
+                # Format distance and duration
+                if total_distance_m >= 1000:
+                    dist_str = f"{total_distance_m / 1000:.1f} km"
+                else:
+                    dist_str = f"{int(total_distance_m)} m"
+
+                dur_minutes = int(total_duration_s / 60)
+                if dur_minutes >= 60:
+                    dur_str = f"{dur_minutes // 60}h {dur_minutes % 60} min"
+                else:
+                    dur_str = f"{dur_minutes} min"
+
+                # Extract step-by-step instructions
+                steps = []
+                legs = osrm_route.get("legs", [])
+                for leg in legs:
                     for s in leg.get("steps", []):
-                        clean_inst = s.get("html_instructions", "")
-                        clean_inst = clean_inst.replace("<b>", "").replace("</b>", "")
-                        clean_inst = clean_inst.replace('<div style="font-size:0.9em">', " - ")
-                        clean_inst = clean_inst.replace("</div>", "")
-                        steps.append(NavRouteStep(
-                            instruction=clean_inst,
-                            distance=s.get("distance", {}).get("text", ""),
-                            duration=s.get("duration", {}).get("text", "")
-                        ))
+                        maneuver = s.get("maneuver", {})
+                        instruction = s.get("name", "")
+                        modifier = maneuver.get("modifier", "")
+                        m_type = maneuver.get("type", "")
 
-                    return NavRouteResponse(
-                        distance=leg.get("distance", {}).get("text", "2.3 km"),
-                        duration=leg.get("duration", {}).get("text", "28 min"),
-                        steps=steps
-                    )
-            except Exception as e:
-                logger.warning(f"Google Maps API error: {e}")
+                        # Build human-readable instruction
+                        if m_type == "depart":
+                            inst_text = f"Start walking on {instruction}" if instruction else "Start walking"
+                        elif m_type == "arrive":
+                            inst_text = "Arrive at destination"
+                        elif m_type == "turn":
+                            inst_text = f"Turn {modifier} onto {instruction}" if instruction else f"Turn {modifier}"
+                        elif m_type == "continue":
+                            inst_text = f"Continue on {instruction}" if instruction else "Continue straight"
+                        elif m_type == "roundabout" or m_type == "rotary":
+                            inst_text = f"Enter roundabout, take exit onto {instruction}" if instruction else "Enter roundabout"
+                        else:
+                            inst_text = f"{m_type.replace('_', ' ').capitalize()} {modifier} {instruction}".strip()
 
-        # Mock fallback data (2.3km, 28min, 5 steps)
+                        step_dist_m = s.get("distance", 0)
+                        step_dur_s = s.get("duration", 0)
+                        step_dist = f"{step_dist_m / 1000:.1f} km" if step_dist_m >= 1000 else f"{int(step_dist_m)} m"
+                        step_dur = f"{int(step_dur_s / 60)} min" if step_dur_s >= 60 else f"{int(step_dur_s)} sec"
+
+                        if step_dist_m > 0:  # Skip zero-distance steps
+                            steps.append(NavRouteStep(
+                                instruction=inst_text,
+                                distance=step_dist,
+                                duration=step_dur,
+                            ))
+
+                # Extract route polyline coordinates for frontend map
+                route_coords = osrm_route.get("geometry", {}).get("coordinates", [])
+
+                response = NavRouteResponse(
+                    distance=dist_str,
+                    duration=dur_str,
+                    steps=steps if steps else [NavRouteStep(instruction="Walk to destination", distance=dist_str, duration=dur_str)],
+                )
+                # Attach extra fields for frontend map (not in pydantic model, but serialized via dict)
+                response_dict = response.model_dump()
+                response_dict["route_coords"] = route_coords
+                response_dict["dest_lat"] = dest["lat"]
+                response_dict["dest_lng"] = dest["lng"]
+                return response_dict
+
+        except Exception as e:
+            logger.warning(f"OSRM routing error: {e}")
+
+        return self._fallback_route()
+
+    def _fallback_route(self) -> NavRouteResponse:
+        """Return mock fallback data when routing APIs are unavailable."""
         return NavRouteResponse(
             distance="2.3 km",
             duration="28 min",
@@ -72,7 +162,7 @@ class NavigationAgent:
         )
 
     def get_nearby(self, lat: float, lng: float, radius: int = 2000, type_: str = "hospital") -> list:
-        """Find nearby places using Google Maps Places API.
+        """Find nearby places using OpenStreetMap Overpass API (free, no key required).
 
         Args:
             lat: Latitude of search center
@@ -83,32 +173,54 @@ class NavigationAgent:
         Returns:
             List of dicts with name, address, rating, lat, lng, wheelchair_accessible
         """
-        if settings.GOOGLE_MAPS_API_KEY:
-            try:
-                url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
-                params = {
-                    "location": f"{lat},{lng}",
-                    "radius": radius,
-                    "type": type_,
-                    "key": settings.GOOGLE_MAPS_API_KEY
-                }
-                res = requests.get(url, params=params, timeout=5)
-                data = res.json()
+        try:
+            # Map common types to OSM amenity tags
+            osm_tag_map = {
+                "hospital": "amenity=hospital",
+                "pharmacy": "amenity=pharmacy",
+                "clinic": "amenity=clinic",
+                "restaurant": "amenity=restaurant",
+                "school": "amenity=school",
+                "bank": "amenity=bank",
+                "bus_station": "amenity=bus_station",
+                "parking": "amenity=parking",
+            }
+            osm_tag = osm_tag_map.get(type_, f"amenity={type_}")
+            tag_key, tag_value = osm_tag.split("=")
 
-                if data.get("status") == "OK":
-                    places = []
-                    for place in data.get("results", [])[:10]:
-                        places.append({
-                            "name": place.get("name", ""),
-                            "address": place.get("vicinity", ""),
-                            "rating": place.get("rating", 0.0),
-                            "lat": place["geometry"]["location"]["lat"],
-                            "lng": place["geometry"]["location"]["lng"],
-                            "wheelchair_accessible": False
-                        })
-                    return places
-            except Exception as e:
-                logger.warning(f"Google Places API error: {e}")
+            # Overpass QL query
+            overpass_url = "https://overpass-api.de/api/interpreter"
+            query = f"""
+            [out:json][timeout:10];
+            (
+              node["{tag_key}"="{tag_value}"](around:{radius},{lat},{lng});
+              way["{tag_key}"="{tag_value}"](around:{radius},{lat},{lng});
+            );
+            out center 10;
+            """
+            res = requests.post(overpass_url, data={"data": query}, timeout=10)
+            data = res.json()
+
+            places = []
+            for element in data.get("elements", [])[:10]:
+                tags = element.get("tags", {})
+                e_lat = element.get("lat") or element.get("center", {}).get("lat")
+                e_lng = element.get("lon") or element.get("center", {}).get("lon")
+
+                if e_lat and e_lng:
+                    wheelchair = tags.get("wheelchair", "")
+                    places.append({
+                        "name": tags.get("name", f"Unnamed {type_.capitalize()}"),
+                        "address": tags.get("addr:full", tags.get("addr:street", "")),
+                        "rating": None,  # OSM doesn't have ratings
+                        "lat": float(e_lat),
+                        "lng": float(e_lng),
+                        "wheelchair_accessible": wheelchair in ("yes", "limited"),
+                    })
+            return places
+
+        except Exception as e:
+            logger.warning(f"Overpass API error: {e}")
 
         return []
 

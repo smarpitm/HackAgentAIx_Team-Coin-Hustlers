@@ -14,7 +14,7 @@ def classify_and_route(user_message: str, has_image: bool = False) -> Dict[str, 
         try:
             import google.generativeai as genai
             genai.configure(api_key=settings.GEMINI_API_KEY)
-            model = genai.GenerativeModel("gemini-1.5-flash")
+            model = genai.GenerativeModel("gemini-2.5-flash")
             prompt = f"{ORCHESTRATOR_PROMPT}\nUser input: '{user_message}' (Has image uploaded: {has_image})"
             response = model.generate_content(prompt)
             

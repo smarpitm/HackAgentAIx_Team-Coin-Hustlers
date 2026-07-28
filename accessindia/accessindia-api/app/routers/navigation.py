@@ -8,11 +8,14 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/nav", tags=["navigation"])
 
 
-@router.post("/route", response_model=NavRouteResponse)
+@router.post("/route")
 async def get_route(request: NavRouteRequest):
     """Get an accessible route between two points."""
     try:
         result = navigation_agent.get_route(request)
+        # result may be a NavRouteResponse or an enriched dict with route_coords
+        if hasattr(result, 'model_dump'):
+            return result.model_dump()
         return result
     except Exception as e:
         logger.error(f"Navigation routing failed: {e}")

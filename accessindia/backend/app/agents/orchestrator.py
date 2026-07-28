@@ -26,7 +26,7 @@ class OrchestratorAgent:
         if GENAI_AVAILABLE:
             try:
                 genai.configure(api_key=self.settings.gemini_api_key.get_secret_value())
-                self.model = genai.GenerativeModel('gemini-1.5-flash')
+                self.model = genai.GenerativeModel('gemini-2.5-flash')
                 logger.info("Orchestrator initialized with Gemini")
             except Exception as e:
                 logger.warning(f"Gemini initialization failed: {e}. Using fallback.")

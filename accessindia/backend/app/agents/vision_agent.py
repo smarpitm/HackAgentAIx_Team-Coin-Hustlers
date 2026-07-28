@@ -26,7 +26,7 @@ class VisionAgent:
         if GENAI_AVAILABLE:
             try:
                 genai.configure(api_key=self.settings.gemini_api_key.get_secret_value())
-                self.model = genai.GenerativeModel("gemini-1.5-flash")
+                self.model = genai.GenerativeModel("gemini-2.5-flash")
                 logger.info("Vision Agent initialized with Gemini Vision")
             except Exception as e:
                 logger.warning(f"Gemini Vision initialization failed: {e}")

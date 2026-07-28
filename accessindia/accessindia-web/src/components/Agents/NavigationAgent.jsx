@@ -12,25 +12,118 @@ export function NavigationAgent({ showToast }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [demoMode, setDemoMode] = useState(false)
-  const mapRef = useRef(null)
+  const mapContainerRef = useRef(null)
+  const mapInstanceRef = useRef(null)
+  const markersRef = useRef([])
+  const routeLineRef = useRef(null)
 
+  // Initialize Leaflet map when location is available
   useEffect(() => {
-    if (lat && lng && mapRef.current && window.google) {
-      const map = new window.google.maps.Map(mapRef.current, {
-        center: { lat, lng },
+    if (!mapContainerRef.current || !window.L) return
+
+    // Default location (New Delhi) if geolocation is denied
+    const mapLat = lat || 28.6139
+    const mapLng = lng || 77.2090
+
+    // Only create map once
+    if (!mapInstanceRef.current) {
+      const map = window.L.map(mapContainerRef.current, {
+        center: [mapLat, mapLng],
         zoom: 14,
-        styles: [
-          { elementType: 'geometry', stylers: [{ color: '#1e293b' }] },
-          { elementType: 'labels.text.stroke', stylers: [{ color: '#0f172a' }] },
-          { elementType: 'labels.text.fill', stylers: [{ color: '#94a3b8' }] },
-          { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#334155' }] },
-          { featureType: 'road', elementType: 'labels.text.fill', stylers: [{ color: '#e2e8f0' }] },
-          { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#0f172a' }] },
-        ],
+        zoomControl: true,
+        attributionControl: true,
       })
-      new window.google.maps.Marker({ position: { lat, lng }, map, title: 'Your location' })
+
+      // Dark-themed tile layer (CartoDB Dark Matter — free, no key)
+      window.L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 19,
+      }).addTo(map)
+
+      // User location marker
+      if (lat && lng) {
+        const userIcon = window.L.divIcon({
+          html: '<div style="width:14px;height:14px;border-radius:50%;background:#f97316;border:3px solid white;box-shadow:0 0 8px rgba(249,115,22,0.6);"></div>',
+          iconSize: [14, 14],
+          iconAnchor: [7, 7],
+          className: '',
+        })
+        window.L.marker([lat, lng], { icon: userIcon })
+          .addTo(map)
+          .bindPopup('<b>📍 Your Location</b>')
+      }
+
+      mapInstanceRef.current = map
+    } else {
+      mapInstanceRef.current.setView([mapLat, mapLng], 14)
+    }
+
+    return () => {
+      // Cleanup on unmount
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove()
+        mapInstanceRef.current = null
+      }
     }
   }, [lat, lng])
+
+  // Update map when route/nearby change
+  useEffect(() => {
+    const map = mapInstanceRef.current
+    if (!map || !route) return
+
+    // Clear old markers and route line
+    markersRef.current.forEach((m) => map.removeLayer(m))
+    markersRef.current = []
+    if (routeLineRef.current) {
+      map.removeLayer(routeLineRef.current)
+      routeLineRef.current = null
+    }
+
+    // Draw route polyline if coordinates are available
+    if (route.route_coords && route.route_coords.length > 0) {
+      const coords = route.route_coords.map((c) => [c[1], c[0]]) // OSRM returns [lng, lat]
+      const polyline = window.L.polyline(coords, {
+        color: '#10b981',
+        weight: 5,
+        opacity: 0.8,
+        dashArray: '10, 6',
+      }).addTo(map)
+      routeLineRef.current = polyline
+      map.fitBounds(polyline.getBounds(), { padding: [40, 40] })
+    }
+
+    // Add destination marker if we have destination coords
+    if (route.dest_lat && route.dest_lng) {
+      const destIcon = window.L.divIcon({
+        html: '<div style="width:16px;height:16px;border-radius:50%;background:#10b981;border:3px solid white;box-shadow:0 0 8px rgba(16,185,129,0.6);"></div>',
+        iconSize: [16, 16],
+        iconAnchor: [8, 8],
+        className: '',
+      })
+      const destMarker = window.L.marker([route.dest_lat, route.dest_lng], { icon: destIcon })
+        .addTo(map)
+        .bindPopup(`<b>🏁 ${destination || 'Destination'}</b>`)
+      markersRef.current.push(destMarker)
+    }
+
+    // Add nearby facility markers
+    nearby.forEach((place) => {
+      if (place.lat && place.lng) {
+        const facilityIcon = window.L.divIcon({
+          html: '<div style="width:12px;height:12px;border-radius:50%;background:#6366f1;border:2px solid white;box-shadow:0 0 6px rgba(99,102,241,0.5);"></div>',
+          iconSize: [12, 12],
+          iconAnchor: [6, 6],
+          className: '',
+        })
+        const marker = window.L.marker([place.lat, place.lng], { icon: facilityIcon })
+          .addTo(map)
+          .bindPopup(`<b>${place.name}</b><br/>${place.address || ''}<br/>⭐ ${place.rating || 'N/A'} ${place.wheelchair_accessible ? '♿ Accessible' : ''}`)
+        markersRef.current.push(marker)
+      }
+    })
+  }, [route, nearby, destination])
 
   const handleSearch = async () => {
     if (!destination.trim()) return
@@ -70,7 +163,7 @@ export function NavigationAgent({ showToast }) {
         </div>
         <div className="min-w-0">
           <h2 className="text-base md:text-lg font-bold text-white">Navigation Agent</h2>
-          <p className="text-[11px] md:text-xs text-slate-400">Find accessible routes and nearby facilities.</p>
+          <p className="text-[11px] md:text-xs text-slate-400">Find accessible routes and nearby facilities via OpenStreetMap.</p>
         </div>
         {demoMode && <span className="demo-badge flex-shrink-0">Demo</span>}
       </div>
@@ -120,17 +213,28 @@ export function NavigationAgent({ showToast }) {
         </div>
       )}
 
-      {route && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
-          <div className="lg:col-span-2 space-y-4 md:space-y-6">
-            <div ref={mapRef} className="agent-card h-56 md:h-72 flex items-center justify-center text-slate-500" aria-label="Map showing your location">
-              <div className="text-center p-4">
-                <MapPin className="w-6 md:w-8 h-6 md:h-8 mx-auto mb-2 opacity-40" aria-hidden="true" />
-                <p className="text-sm">Map will appear here when Google Maps API is loaded.</p>
-                {lat && lng && <p className="text-xs text-slate-600 mt-1">Location: {lat.toFixed(4)}, {lng.toFixed(4)}</p>}
+      {/* Map + Results */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+        <div className="lg:col-span-2 space-y-4 md:space-y-6">
+          {/* Leaflet Map Container */}
+          <div
+            ref={mapContainerRef}
+            className="agent-card h-56 md:h-72 rounded-2xl overflow-hidden z-0"
+            style={{ minHeight: '240px' }}
+            aria-label="Interactive map showing your location and route"
+          >
+            {!window.L && (
+              <div className="flex items-center justify-center h-full text-slate-500 text-center p-4">
+                <div>
+                  <MapPin className="w-6 md:w-8 h-6 md:h-8 mx-auto mb-2 opacity-40" aria-hidden="true" />
+                  <p className="text-sm">Map loading...</p>
+                </div>
               </div>
-            </div>
+            )}
+          </div>
 
+          {/* Route Steps */}
+          {route && (
             <div className="agent-card p-4 md:p-5">
               <div className="flex flex-wrap items-center justify-between mb-4 pb-3 border-b border-slate-700 gap-2">
                 <h3 className="text-sm font-semibold text-slate-200 flex items-center gap-2">
@@ -163,8 +267,11 @@ export function NavigationAgent({ showToast }) {
                 ))}
               </div>
             </div>
-          </div>
+          )}
+        </div>
 
+        {/* Nearby Facilities (right sidebar) */}
+        {route && (
           <div className="space-y-4">
             <div className="agent-card p-4 md:p-5 space-y-3">
               <h3 className="text-sm font-semibold text-slate-200 flex items-center gap-2 pb-3 border-b border-slate-700">
@@ -176,7 +283,23 @@ export function NavigationAgent({ showToast }) {
               ) : (
                 <div className="space-y-3">
                   {nearby.map((place, idx) => (
-                    <div key={idx} className="p-3 rounded-xl bg-slate-900/70 border border-slate-800 space-y-1.5">
+                    <div
+                      key={idx}
+                      className="p-3 rounded-xl bg-slate-900/70 border border-slate-800 space-y-1.5 cursor-pointer hover:border-emerald-500/40 transition-colors"
+                      onClick={() => {
+                        if (place.lat && place.lng && mapInstanceRef.current) {
+                          mapInstanceRef.current.setView([place.lat, place.lng], 16)
+                        }
+                      }}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`View ${place.name} on map`}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && place.lat && place.lng && mapInstanceRef.current) {
+                          mapInstanceRef.current.setView([place.lat, place.lng], 16)
+                        }
+                      }}
+                    >
                       <p className="text-xs font-semibold text-emerald-300">{place.name}</p>
                       <p className="text-[11px] text-slate-400">{place.address || ''}</p>
                       <div className="flex flex-wrap items-center gap-2 text-[10px]">
@@ -193,8 +316,8 @@ export function NavigationAgent({ showToast }) {
               )}
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </section>
   )
 }

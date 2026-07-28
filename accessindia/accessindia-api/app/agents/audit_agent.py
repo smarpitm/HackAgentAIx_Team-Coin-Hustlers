@@ -25,7 +25,7 @@ class AuditAgent:
             try:
                 import google.generativeai as genai
                 genai.configure(api_key=settings.GEMINI_API_KEY)
-                model = genai.GenerativeModel("gemini-1.5-flash")
+                model = genai.GenerativeModel("gemini-2.5-flash")
 
                 image_part = {
                     "mime_type": "image/jpeg",
