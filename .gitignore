@@ -37,3 +37,8 @@ Thumbs.db
 # Project specific
 AccessIndia_AI_*_VibeCoding_Prompts.pdf
 AccessIndia_AI_Step_by_Step_Build_Guide.pdf
+AccessIndia_AI_Promptbook.pdf
+*.pdf
+
+# IDE / tool config
+.kiro/
