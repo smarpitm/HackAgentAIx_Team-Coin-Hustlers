@@ -150,7 +150,7 @@ const useSpeechToText = () => {
         try {
           // Send to backend for Gemini transcription
           const formData = new FormData()
-          formData.append('audio', audioBlob, 'recording.webm')
+          formData.append('file', audioBlob, 'recording.webm')
 
           const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
           const response = await axios.post(`${API_URL}/api/speech/transcribe`, formData, {
@@ -181,9 +181,16 @@ const useSpeechToText = () => {
   }
 
   /**
+   * Clear error message
+   */
+  const clearError = () => {
+    setError(null)
+  }
+
+  /**
    * Start listening (chooses engine automatically)
    */
-  const start = () => {
+  const startListening = () => {
     setError(null)
     
     if (engine === 'web-speech' && recognitionRef.current) {
@@ -196,7 +203,7 @@ const useSpeechToText = () => {
   /**
    * Stop listening
    */
-  const stop = () => {
+  const stopListening = () => {
     if (engine === 'web-speech' && recognitionRef.current) {
       try {
         recognitionRef.current.stop()
@@ -237,12 +244,14 @@ const useSpeechToText = () => {
   return {
     transcript,
     isListening,
-    start,
-    stop,
+    startListening,
+    stopListening,
     reset,
     error,
+    clearError,
     engine
   }
 }
 
 export default useSpeechToText
+export { useSpeechToText }

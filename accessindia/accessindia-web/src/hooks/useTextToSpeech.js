@@ -109,3 +109,4 @@ const useTextToSpeech = () => {
 }
 
 export default useTextToSpeech
+export { useTextToSpeech }
