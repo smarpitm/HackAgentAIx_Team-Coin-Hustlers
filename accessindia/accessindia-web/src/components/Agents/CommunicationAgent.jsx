@@ -1,8 +1,10 @@
-import React, { useState, useCallback } from 'react'
-import { Mic, Hand, Volume2, Sparkles } from 'lucide-react'
+import React, { useState, useEffect, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Mic, Hand, Volume2, Sparkles, Send, MessageSquare } from 'lucide-react'
 import { useSpeechToText } from '../../hooks/useSpeechToText'
 import { CameraFeed } from '../Shared/CameraFeed'
 import { TTSButton } from '../Shared/TTSButton'
+import { useAppStore } from '../../store/useAppStore'
 
 const SUPPORTED_GESTURES = [
   { sign: '👋', label: 'Hello / Namaste', confidence: 0.92 },
@@ -13,10 +15,24 @@ const SUPPORTED_GESTURES = [
   { sign: '🤟', label: 'I Love You (ILY)', confidence: 0.82 },
 ]
 
+const SPEECH_PRESETS = [
+  'Find nearby accessible hospital with ramp entrance',
+  'Is the main entrance accessible for wheelchairs?',
+  'Where is the nearest accessible restroom?',
+  'Can you direct me to the elevator?',
+]
+
 export function CommunicationAgent({ showToast }) {
+  const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('speech')
   const { isListening, transcript, error: sttError, startListening, stopListening } = useSpeechToText()
+  const [customText, setCustomText] = useState('')
   const [detectedSign, setDetectedSign] = useState(null)
+  const { addMessage } = useAppStore()
+
+  useEffect(() => {
+    if (transcript) setCustomText(transcript)
+  }, [transcript])
 
   const handleLandmarks = useCallback((landmarks) => {
     if (landmarks && landmarks.length > 0) {
@@ -29,6 +45,15 @@ export function CommunicationAgent({ showToast }) {
 
   const toggleListening = () => { isListening ? stopListening() : startListening() }
 
+  const activeSpeechText = customText || transcript
+
+  const handleSendToChat = () => {
+    if (!activeSpeechText.trim()) return
+    addMessage({ role: 'user', content: activeSpeechText.trim(), type: 'text' })
+    if (showToast) showToast('Speech sent to AI Assistant', 'success')
+    navigate('/')
+  }
+
   return (
     <section className="max-w-5xl mx-auto space-y-4 md:space-y-6" aria-label="Communication Agent">
       {/* Header */}
@@ -38,7 +63,7 @@ export function CommunicationAgent({ showToast }) {
         </div>
         <div className="min-w-0">
           <h2 className="text-base md:text-lg font-bold text-white">Communication Agent</h2>
-          <p className="text-[11px] md:text-xs text-slate-400">Speech recognition and sign language gesture interpretation.</p>
+          <p className="text-[11px] md:text-xs text-slate-400">Speech recognition, custom voice input, and sign language gesture interpretation.</p>
         </div>
       </div>
 
@@ -49,8 +74,8 @@ export function CommunicationAgent({ showToast }) {
           aria-selected={activeTab === 'speech'}
           onClick={() => setActiveTab('speech')}
           className={`touch-target flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
-            activeTab === 'speech' 
-              ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg shadow-orange-500/20' 
+            activeTab === 'speech'
+              ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg shadow-orange-500/20'
               : 'text-slate-400 hover:text-white hover:bg-slate-700/50'
           }`}
           aria-label="Speech tab"
@@ -63,8 +88,8 @@ export function CommunicationAgent({ showToast }) {
           aria-selected={activeTab === 'sign'}
           onClick={() => setActiveTab('sign')}
           className={`touch-target flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
-            activeTab === 'sign' 
-              ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg shadow-orange-500/20' 
+            activeTab === 'sign'
+              ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg shadow-orange-500/20'
               : 'text-slate-400 hover:text-white hover:bg-slate-700/50'
           }`}
           aria-label="Sign language tab"
@@ -76,10 +101,11 @@ export function CommunicationAgent({ showToast }) {
 
       {activeTab === 'speech' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 animate-fade-in">
+          {/* Left: Microphone & Presets */}
           <div className="agent-card p-6 md:p-8 flex flex-col items-center justify-center text-center space-y-4 md:space-y-6">
             <button
               onClick={toggleListening}
-              className={`w-24 h-24 md:w-28 md:h-28 rounded-full flex items-center justify-center transition-all duration-300 touch-target ${
+              className={`w-24 h-24 md:w-28 md:h-28 rounded-full flex items-center justify-center transition-all duration-300 touch-target cursor-pointer ${
                 isListening
                   ? 'bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-2xl shadow-orange-500/40 scale-110 animate-pulse'
                   : 'bg-slate-700 text-slate-300 hover:bg-slate-600 hover:text-white hover:scale-105'
@@ -90,25 +116,67 @@ export function CommunicationAgent({ showToast }) {
             </button>
             <p className="text-sm text-slate-400">{isListening ? 'Listening... Tap to stop' : 'Tap to start speaking'}</p>
             {sttError && <p className="text-xs text-rose-400 animate-fade-in" role="alert">⚠️ {sttError}</p>}
+
+            {/* Quick Speech Presets */}
+            <div className="w-full pt-2 space-y-2 border-t border-slate-700/50 text-left">
+              <p className="text-xs font-semibold text-slate-400">Quick Voice Prompts:</p>
+              <div className="flex flex-col gap-1.5">
+                {SPEECH_PRESETS.map((preset, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setCustomText(preset)}
+                    className="text-xs p-2 rounded-lg bg-slate-900/60 hover:bg-orange-500/20 text-slate-300 hover:text-orange-300 border border-slate-800 hover:border-orange-500/30 transition-all text-left truncate cursor-pointer"
+                  >
+                    🎤 {preset}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
 
-          <div className="agent-card p-4 md:p-5 space-y-4">
-            <h3 className="text-sm font-semibold text-slate-200 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-purple-400"></span>
-              Transcript
-            </h3>
-            <div className="bg-slate-900/60 backdrop-blur-sm rounded-xl p-4 border border-slate-800 min-h-[100px] md:min-h-[120px] transition-all duration-300">
-              {transcript ? (
-                <p className="text-sm text-slate-200 leading-relaxed animate-fade-in">{transcript}</p>
-              ) : (
-                <p className="text-sm text-slate-500 italic">Speech will appear here...</p>
-              )}
-            </div>
-            {transcript && (
-              <div className="flex justify-end animate-fade-in">
-                <TTSButton text={transcript} label="Repeat" />
+          {/* Right: Editable Transcript Panel */}
+          <div className="agent-card p-4 md:p-5 space-y-4 flex flex-col justify-between">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-semibold text-slate-200 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-purple-400"></span>
+                  Transcript
+                </h3>
+                {customText && (
+                  <button
+                    onClick={() => setCustomText('')}
+                    className="text-xs text-slate-500 hover:text-slate-300 transition-colors"
+                  >
+                    Clear
+                  </button>
+                )}
               </div>
-            )}
+
+              <div className="bg-slate-900/60 backdrop-blur-sm rounded-xl p-3 border border-slate-800 min-h-[120px] focus-within:border-orange-500/50 transition-all">
+                <textarea
+                  value={customText}
+                  onChange={(e) => setCustomText(e.target.value)}
+                  placeholder="Speech transcript will appear here when speaking, or type/select a prompt below..."
+                  className="w-full h-28 bg-transparent border-none text-sm text-slate-200 placeholder-slate-500 focus:outline-none resize-none leading-relaxed"
+                  aria-label="Editable speech transcript"
+                />
+              </div>
+            </div>
+
+            {/* Action Bar */}
+            <div className="flex items-center justify-between pt-2 border-t border-slate-700/50 gap-2">
+              <TTSButton text={activeSpeechText} label="Repeat (TTS)" />
+
+              <button
+                onClick={handleSendToChat}
+                disabled={!activeSpeechText.trim()}
+                className="touch-target px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 disabled:opacity-40 text-white font-semibold rounded-xl text-xs flex items-center gap-1.5 transition-all shadow-md shadow-orange-500/20 cursor-pointer"
+                aria-label="Ask AI Assistant with transcript"
+              >
+                <Send className="w-3.5 h-3.5" aria-hidden="true" />
+                <span>Ask AI</span>
+              </button>
+            </div>
           </div>
         </div>
       )}
