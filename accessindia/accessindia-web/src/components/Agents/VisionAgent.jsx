@@ -32,8 +32,8 @@ export function VisionAgent({ showToast }) {
   return (
     <section className="max-w-5xl mx-auto space-y-4 md:space-y-6" aria-label="Vision Agent">
       {/* Header */}
-      <div className="agent-card p-4 md:p-6 flex items-center gap-3 md:gap-4">
-        <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 flex-shrink-0">
+      <div className="agent-card p-4 md:p-6 flex items-center gap-3 md:gap-4 animate-fade-in">
+        <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-400/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400 flex-shrink-0 shadow-lg shadow-cyan-500/10">
           <Eye className="w-5 md:w-6 h-5 md:h-6" aria-hidden="true" />
         </div>
         <div className="min-w-0">
@@ -45,15 +45,25 @@ export function VisionAgent({ showToast }) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         {/* Left: Upload */}
-        <div className="agent-card p-4 md:p-5 space-y-4">
-          <h3 className="text-sm font-semibold text-slate-200">Upload Image</h3>
+        <div className="agent-card p-4 md:p-5 space-y-4 animate-slide-in">
+          <h3 className="text-sm font-semibold text-slate-200 flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-cyan-400"></span>
+            Upload Image
+          </h3>
           <FileDrop onFileSelected={handleFile} title="Drop image here" description="JPEG or PNG supported" />
           {preview && !loading && (
-            <img src={preview} alt="Uploaded image preview for vision analysis" className="w-full h-40 md:h-48 object-cover rounded-xl border border-slate-700" />
+            <div className="relative group">
+              <img src={preview} alt="Uploaded image preview for vision analysis" className="w-full h-40 md:h-48 object-cover rounded-xl border border-slate-700 transition-all duration-300 group-hover:border-cyan-500/50" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            </div>
           )}
           {loading && (
-            <div className="flex items-center justify-center py-6 md:py-8">
-              <Loader2 className="w-8 h-8 text-cyan-400 animate-spin" aria-label="Analyzing image" />
+            <div className="flex flex-col items-center justify-center py-6 md:py-8 space-y-3">
+              <div className="relative">
+                <div className="w-12 h-12 border-4 border-cyan-500/20 border-t-cyan-500 rounded-full animate-spin"></div>
+                <Loader2 className="w-5 h-5 text-cyan-400 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" aria-label="Analyzing image" />
+              </div>
+              <p className="text-sm text-cyan-400 animate-pulse">Analyzing image...</p>
             </div>
           )}
         </div>
@@ -61,7 +71,7 @@ export function VisionAgent({ showToast }) {
         {/* Right: Results */}
         <div className="space-y-3 md:space-y-4">
           {error && (
-            <div className="bg-rose-500/10 border border-rose-500/30 text-rose-400 p-3 md:p-4 rounded-2xl text-sm flex items-center gap-3" role="alert">
+            <div className="bg-rose-500/10 border border-rose-500/30 text-rose-400 p-3 md:p-4 rounded-2xl text-sm flex items-center gap-3 animate-fade-in" role="alert">
               <AlertCircle className="w-5 h-5 flex-shrink-0" aria-hidden="true" />
               <span>{error}</span>
             </div>
@@ -69,7 +79,7 @@ export function VisionAgent({ showToast }) {
 
           {result && (
             <>
-              <div className="agent-card p-4 md:p-5 space-y-3">
+              <div className="agent-card p-4 md:p-5 space-y-3 animate-fade-in">
                 <div className="flex items-center justify-between border-b border-slate-700 pb-3 flex-wrap gap-2">
                   <div className="flex items-center gap-2 text-cyan-400 font-semibold text-sm">
                     <FileText className="w-4 h-4" aria-hidden="true" />
@@ -82,7 +92,7 @@ export function VisionAgent({ showToast }) {
                 </p>
               </div>
 
-              <div className="agent-card p-4 md:p-5 space-y-3">
+              <div className="agent-card p-4 md:p-5 space-y-3 animate-fade-in" style={{ animationDelay: '100ms' }}>
                 <div className="flex items-center justify-between border-b border-slate-700 pb-3 flex-wrap gap-2">
                   <h4 className="text-xs font-semibold uppercase text-slate-400 tracking-wider">Scene Description</h4>
                   <TTSButton text={result.description} label="Describe Aloud" />
@@ -90,11 +100,11 @@ export function VisionAgent({ showToast }) {
                 <p className="text-sm text-slate-200 leading-relaxed">{result.description}</p>
               </div>
 
-              <div className="agent-card p-4 md:p-5 space-y-3">
+              <div className="agent-card p-4 md:p-5 space-y-3 animate-fade-in" style={{ animationDelay: '200ms' }}>
                 <h4 className="text-xs font-semibold uppercase text-slate-400 tracking-wider">Detected Objects</h4>
                 <div className="flex flex-wrap gap-2">
                   {result.detected_items?.map((item, idx) => (
-                    <span key={idx} className="px-3 py-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-medium flex items-center gap-1.5">
+                    <span key={idx} className="px-3 py-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-medium flex items-center gap-1.5 hover:bg-cyan-500/20 transition-colors">
                       <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400" aria-hidden="true" />
                       {item}
                     </span>
@@ -105,8 +115,10 @@ export function VisionAgent({ showToast }) {
           )}
 
           {!result && !error && !loading && (
-            <div className="agent-card p-8 md:p-12 text-center text-slate-500">
-              <Eye className="w-8 md:w-10 h-8 md:h-10 mx-auto mb-3 opacity-30" aria-hidden="true" />
+            <div className="agent-card p-8 md:p-12 text-center text-slate-500 animate-fade-in">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-slate-800/50 flex items-center justify-center">
+                <Eye className="w-8 md:w-10 h-8 md:h-10 opacity-30" aria-hidden="true" />
+              </div>
               <p className="text-sm">Upload an image to analyze.</p>
             </div>
           )}

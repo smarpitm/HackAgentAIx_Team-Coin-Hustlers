@@ -38,8 +38,8 @@ export function AuditAgent({ showToast }) {
   return (
     <section className="max-w-5xl mx-auto space-y-4 md:space-y-6" aria-label="Accessibility Audit Agent">
       {/* Header */}
-      <div className="agent-card p-4 md:p-6 flex items-center gap-3 md:gap-4">
-        <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 flex-shrink-0">
+      <div className="agent-card p-4 md:p-6 flex items-center gap-3 md:gap-4 animate-fade-in">
+        <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-gradient-to-br from-amber-500/20 to-yellow-400/20 border border-amber-500/30 flex items-center justify-center text-amber-400 flex-shrink-0 shadow-lg shadow-amber-500/10">
           <ClipboardCheck className="w-5 md:w-6 h-5 md:h-6" aria-hidden="true" />
         </div>
         <div className="min-w-0">
@@ -51,15 +51,25 @@ export function AuditAgent({ showToast }) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         {/* Left: Upload */}
-        <div className="agent-card p-4 md:p-5 space-y-4">
-          <h3 className="text-sm font-semibold text-slate-200">Upload Building Photo</h3>
+        <div className="agent-card p-4 md:p-5 space-y-4 animate-slide-in">
+          <h3 className="text-sm font-semibold text-slate-200 flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-amber-400"></span>
+            Upload Building Photo
+          </h3>
           <FileDrop onFileSelected={handleFile} title="Drop building image here" description="JPEG or PNG of entrance, ramp, or facility" />
           {preview && !loading && (
-            <img src={preview} alt="Building photo uploaded for accessibility audit" className="w-full h-40 md:h-48 object-cover rounded-xl border border-slate-700" />
+            <div className="relative group">
+              <img src={preview} alt="Building photo uploaded for accessibility audit" className="w-full h-40 md:h-48 object-cover rounded-xl border border-slate-700 transition-all duration-300 group-hover:border-amber-500/50" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            </div>
           )}
           {loading && (
-            <div className="flex items-center justify-center py-6 md:py-8">
-              <Loader2 className="w-8 h-8 text-amber-400 animate-spin" aria-label="Auditing accessibility" />
+            <div className="flex flex-col items-center justify-center py-6 md:py-8 space-y-3">
+              <div className="relative">
+                <div className="w-12 h-12 border-4 border-amber-500/20 border-t-amber-500 rounded-full animate-spin"></div>
+                <Loader2 className="w-5 h-5 text-amber-400 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" aria-label="Auditing accessibility" />
+              </div>
+              <p className="text-sm text-amber-400 animate-pulse">Auditing accessibility...</p>
             </div>
           )}
         </div>
@@ -76,10 +86,10 @@ export function AuditAgent({ showToast }) {
           {result && (
             <>
               {/* Score Gauge */}
-              <div className="agent-card p-4 md:p-6 text-center space-y-3">
+              <div className="agent-card p-4 md:p-6 text-center space-y-3 animate-fade-in">
                 <span className="text-xs uppercase font-semibold text-slate-400 tracking-wider">Accessibility Score</span>
                 <div className="flex items-center justify-center">
-                  <div className={`w-24 h-24 md:w-28 md:h-28 rounded-full border-4 flex flex-col items-center justify-center shadow-xl ${getScoreColor(result.score).border} ${getScoreColor(result.score).bg}`} aria-label={`Score: ${result.score} out of 100`}>
+                  <div className={`w-24 h-24 md:w-28 md:h-28 rounded-full border-4 flex flex-col items-center justify-center shadow-xl ${getScoreColor(result.score).border} ${getScoreColor(result.score).bg} animate-scale-in`} aria-label={`Score: ${result.score} out of 100`}>
                     <span className={`text-2xl md:text-3xl font-extrabold ${getScoreColor(result.score).text}`}>{result.score}</span>
                     <span className="text-[10px] text-slate-400 font-medium">/ 100</span>
                   </div>
@@ -100,7 +110,7 @@ export function AuditAgent({ showToast }) {
               </div>
 
               {/* Issues */}
-              <div className="agent-card p-4 md:p-5 space-y-3">
+              <div className="agent-card p-4 md:p-5 space-y-3 animate-fade-in" style={{ animationDelay: '100ms' }}>
                 <div className="flex items-center justify-between border-b border-slate-700 pb-3 flex-wrap gap-2">
                   <h4 className="text-xs font-semibold uppercase text-rose-400 flex items-center gap-2">
                     <AlertTriangle className="w-4 h-4" aria-hidden="true" />
@@ -110,7 +120,7 @@ export function AuditAgent({ showToast }) {
                 </div>
                 <div className="space-y-2 max-h-48 overflow-y-auto">
                   {result.issues.map((issue, idx) => (
-                    <div key={idx} className="p-3 rounded-xl bg-slate-900/60 border border-rose-500/20 text-xs text-rose-200 flex items-start gap-2">
+                    <div key={idx} className="p-3 rounded-xl bg-slate-900/60 border border-rose-500/20 text-xs text-rose-200 flex items-start gap-2 hover:bg-rose-500/10 transition-colors">
                       <AlertCircle className="w-4 h-4 text-rose-400 flex-shrink-0 mt-0.5" aria-hidden="true" />
                       <span>{typeof issue === 'string' ? issue : issue.description || ''}</span>
                     </div>
@@ -119,14 +129,14 @@ export function AuditAgent({ showToast }) {
               </div>
 
               {/* Fixes */}
-              <div className="agent-card p-4 md:p-5 space-y-3">
+              <div className="agent-card p-4 md:p-5 space-y-3 animate-fade-in" style={{ animationDelay: '200ms' }}>
                 <h4 className="text-xs font-semibold uppercase text-emerald-400 flex items-center gap-2 border-b border-slate-700 pb-3">
                   <Wrench className="w-4 h-4" aria-hidden="true" />
                   Recommended Fixes ({result.fixes.length})
                 </h4>
                 <div className="space-y-2 max-h-48 overflow-y-auto">
                   {result.fixes.map((fix, idx) => (
-                    <div key={idx} className="p-3 rounded-xl bg-slate-900/60 border border-emerald-500/20 text-xs text-emerald-200 flex items-start gap-2">
+                    <div key={idx} className="p-3 rounded-xl bg-slate-900/60 border border-emerald-500/20 text-xs text-emerald-200 flex items-start gap-2 hover:bg-emerald-500/10 transition-colors">
                       <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-[10px] font-bold flex-shrink-0" aria-label={`Fix number ${idx + 1}`}>
                         {idx + 1}
                       </span>

@@ -44,23 +44,23 @@ export function FileDrop({ onFileSelected, accept = 'image/*', title = 'Upload I
       />
 
       {preview ? (
-        <div className="relative group rounded-2xl overflow-hidden border-2 border-orange-500/50 bg-slate-800/80 p-2 transition-all">
+        <div className="relative group rounded-2xl overflow-hidden border-2 border-orange-500/50 bg-slate-800/80 p-2 transition-all duration-300 hover:border-orange-500/70 hover:shadow-lg hover:shadow-orange-500/10">
           <img src={preview} alt={`Preview of ${selectedFile?.name || 'uploaded image'}`} className="w-full h-40 md:h-56 object-cover rounded-xl" />
           <div className="absolute top-3 right-3 flex gap-2">
             <button
               onClick={clearFile}
-              className="touch-target bg-slate-900/80 hover:bg-rose-600 text-white p-2 rounded-full backdrop-blur-md transition-colors flex items-center justify-center"
+              className="touch-target bg-slate-900/80 hover:bg-rose-600 text-white p-2 rounded-full backdrop-blur-md transition-all duration-300 hover:scale-110 flex items-center justify-center shadow-lg"
               aria-label="Remove uploaded image"
             >
               <X className="w-4 h-4" aria-hidden="true" />
             </button>
           </div>
           <div className="mt-3 px-3 pb-2 flex items-center justify-between text-xs text-slate-300">
-            <span className="flex items-center gap-1.5 font-medium text-orange-400">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" aria-hidden="true" />
-              <span>{selectedFile?.name}</span>
+            <span className="flex items-center gap-1.5 font-medium text-orange-400 truncate">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" aria-hidden="true" />
+              <span className="truncate">{selectedFile?.name}</span>
             </span>
-            <span className="text-slate-400">{(selectedFile?.size / 1024).toFixed(1)} KB</span>
+            <span className="text-slate-400 flex-shrink-0">{(selectedFile?.size / 1024).toFixed(1)} KB</span>
           </div>
         </div>
       ) : (
@@ -74,13 +74,13 @@ export function FileDrop({ onFileSelected, accept = 'image/*', title = 'Upload I
           role="button"
           tabIndex={0}
           aria-label={`${title}. ${description}. Press Enter to select a file.`}
-          className={`border-2 border-dashed rounded-2xl p-6 md:p-8 text-center cursor-pointer transition-all duration-200 flex flex-col items-center justify-center ${
+          className={`border-2 border-dashed rounded-2xl p-6 md:p-8 text-center cursor-pointer transition-all duration-300 flex flex-col items-center justify-center active:scale-[0.98] ${
             isDragging
-              ? 'border-orange-500 bg-orange-500/10 scale-[1.01]'
-              : 'border-slate-700 bg-slate-800/40 hover:border-slate-500 hover:bg-slate-800/80'
+              ? 'border-orange-500 bg-orange-500/10 scale-[1.02] shadow-lg shadow-orange-500/20'
+              : 'border-slate-700 bg-slate-800/40 hover:border-slate-500 hover:bg-slate-800/80 hover:shadow-md'
           }`}
         >
-          <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center mb-3 text-orange-400 group-hover:scale-110 transition-transform">
+          <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gradient-to-br from-orange-500/10 to-amber-400/10 border border-orange-500/20 flex items-center justify-center mb-3 text-orange-400 group-hover:scale-110 transition-transform duration-300">
             <UploadCloud className="w-6 md:w-7 h-6 md:h-7" aria-hidden="true" />
           </div>
           <h3 className="text-sm font-semibold text-slate-200 mb-1">{title}</h3>

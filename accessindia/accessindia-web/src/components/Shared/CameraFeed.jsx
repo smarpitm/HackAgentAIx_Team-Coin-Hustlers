@@ -39,7 +39,7 @@ export function CameraFeed({ onLandmarksDetected }) {
   }
 
   return (
-    <div className="relative rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 flex flex-col items-center justify-center min-h-[320px] md:min-h-[380px]" role="region" aria-label="Camera feed for sign language detection">
+    <div className="relative rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 flex flex-col items-center justify-center min-h-[320px] md:min-h-[380px] shadow-lg" role="region" aria-label="Camera feed for sign language detection">
       <div className="relative w-full h-full flex items-center justify-center bg-slate-900/90">
         <video
           ref={videoRef}
@@ -57,8 +57,8 @@ export function CameraFeed({ onLandmarksDetected }) {
         />
 
         {!isActive && (
-          <div className="text-center p-4 md:p-6 space-y-3">
-            <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center mx-auto text-slate-400">
+          <div className="text-center p-4 md:p-6 space-y-3 animate-fade-in">
+            <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-slate-800 to-slate-700 border border-slate-600 flex items-center justify-center mx-auto text-slate-400 shadow-lg">
               <Video className="w-7 md:w-8 h-7 md:h-8" aria-hidden="true" />
             </div>
             <div>
@@ -70,22 +70,22 @@ export function CameraFeed({ onLandmarksDetected }) {
       </div>
 
       {streamError && (
-        <div className="absolute top-4 left-4 right-4 bg-rose-500/10 border border-rose-500/30 text-rose-400 p-3 rounded-xl text-xs text-center" role="alert">
+        <div className="absolute top-4 left-4 right-4 bg-rose-500/10 backdrop-blur-sm border border-rose-500/30 text-rose-400 p-3 rounded-xl text-xs text-center animate-fade-in" role="alert">
           {streamError}
         </div>
       )}
 
-      <div className="p-3 md:p-4 bg-slate-900/90 border-t border-slate-800 w-full flex items-center justify-between">
+      <div className="p-3 md:p-4 bg-slate-900/90 backdrop-blur-md border-t border-slate-800 w-full flex items-center justify-between">
         <div className="flex items-center gap-2 text-xs">
-          <span className={`w-2.5 h-2.5 rounded-full ${isActive ? 'bg-emerald-500 animate-pulse' : 'bg-slate-600'}`} aria-hidden="true"></span>
+          <span className={`w-2.5 h-2.5 rounded-full ${isActive ? 'bg-emerald-500 animate-pulse shadow-lg shadow-emerald-500/50' : 'bg-slate-600'}`} aria-hidden="true"></span>
           <span className="text-slate-300 font-medium">{isActive ? 'Live Stream Active' : 'Camera Standby'}</span>
         </div>
         <button
           onClick={handleToggleCamera}
-          className={`touch-target px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all ${
+          className={`touch-target px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all duration-300 active:scale-95 ${
             isActive
-              ? 'bg-rose-500/10 text-rose-400 border border-rose-500/30 hover:bg-rose-500/20'
-              : 'bg-orange-500 text-white hover:bg-orange-600 shadow-lg shadow-orange-500/20'
+              ? 'bg-rose-500/10 text-rose-400 border border-rose-500/30 hover:bg-rose-500/20 hover:shadow-md'
+              : 'bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700 shadow-lg shadow-orange-500/20 hover:shadow-orange-500/30'
           }`}
           aria-label={isActive ? 'Stop camera' : 'Start camera for sign language detection'}
         >

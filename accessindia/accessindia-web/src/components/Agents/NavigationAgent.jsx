@@ -158,8 +158,8 @@ export function NavigationAgent({ showToast }) {
   return (
     <section className="max-w-6xl mx-auto space-y-4 md:space-y-6" aria-label="Navigation Agent">
       {/* Header */}
-      <div className="agent-card p-4 md:p-6 flex items-center gap-3 md:gap-4">
-        <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 flex-shrink-0">
+      <div className="agent-card p-4 md:p-6 flex items-center gap-3 md:gap-4 animate-fade-in">
+        <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-teal-400/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 flex-shrink-0 shadow-lg shadow-emerald-500/10">
           <Navigation className="w-5 md:w-6 h-5 md:h-6" aria-hidden="true" />
         </div>
         <div className="min-w-0">
@@ -186,14 +186,14 @@ export function NavigationAgent({ showToast }) {
             onChange={(e) => setDestination(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Enter destination..."
-            className="w-full bg-slate-800 border border-slate-700 focus:border-emerald-500 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none transition-colors min-h-[44px]"
+            className="w-full bg-slate-800/80 backdrop-blur-sm border border-slate-700 focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none transition-all duration-300 min-h-[44px]"
             aria-label="Destination"
           />
         </div>
         <button
           onClick={handleSearch}
           disabled={loading || !destination.trim()}
-          className="touch-target px-6 py-3 bg-emerald-500 hover:bg-emerald-600 disabled:opacity-40 text-slate-950 font-bold rounded-xl transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2"
+          className="touch-target px-6 py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 disabled:opacity-40 text-slate-950 font-bold rounded-xl transition-all duration-300 shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30 flex items-center justify-center gap-2"
           aria-label={loading ? 'Searching...' : 'Search routes'}
         >
           {loading ? <Loader2 className="w-5 h-5 animate-spin" aria-hidden="true" /> : <Search className="w-5 h-5" aria-hidden="true" />}

@@ -68,29 +68,39 @@ function Toast({ message, type = 'error', onDismiss }) {
 
 // Mobile bottom navigation
 const mobileNavItems = [
-  { path: '/', icon: Cpu, label: 'Chat' },
-  { path: '/vision', icon: Eye, label: 'Vision' },
-  { path: '/communication', icon: Volume2, label: 'Comm' },
-  { path: '/navigation', icon: Navigation, label: 'Nav' },
-  { path: '/audit', icon: ClipboardCheck, label: 'Audit' },
+  { path: '/', icon: Cpu, label: 'Chat', color: 'from-orange-500 to-amber-400' },
+  { path: '/vision', icon: Eye, label: 'Vision', color: 'from-cyan-500 to-blue-400' },
+  { path: '/communication', icon: Volume2, label: 'Comm', color: 'from-purple-500 to-pink-400' },
+  { path: '/navigation', icon: Navigation, label: 'Nav', color: 'from-emerald-500 to-teal-400' },
+  { path: '/audit', icon: ClipboardCheck, label: 'Audit', color: 'from-amber-500 to-yellow-400' },
 ]
 
 function MobileBottomNav() {
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-900 border-t border-slate-800 flex" aria-label="Mobile navigation">
-      {mobileNavItems.map(({ path, icon: Icon, label }) => (
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-900/90 backdrop-blur-md border-t border-slate-800/50 flex" aria-label="Mobile navigation">
+      {mobileNavItems.map(({ path, icon: Icon, label, color }) => (
         <NavLink
           key={path}
           to={path}
           className={({ isActive }) =>
-            `flex-1 flex flex-col items-center justify-center py-2 min-h-[56px] text-[10px] font-medium transition-colors ${
-              isActive ? 'text-orange-400' : 'text-slate-500 hover:text-slate-300'
+            `flex-1 flex flex-col items-center justify-center py-2 min-h-[56px] text-[10px] font-medium transition-all duration-300 ${
+              isActive 
+                ? 'text-white' 
+                : 'text-slate-500 hover:text-slate-300'
             }`
           }
           aria-label={`Navigate to ${label}`}
         >
-          <Icon className="w-5 h-5 mb-0.5" aria-hidden="true" />
-          <span>{label}</span>
+          {({ isActive }) => (
+            <>
+              <div className={`p-2 rounded-xl mb-1 transition-all duration-300 ${
+                isActive ? `bg-gradient-to-br ${color} shadow-lg` : 'bg-slate-800'
+              }`}>
+                <Icon className="w-5 h-5" aria-hidden="true" />
+              </div>
+              <span>{label}</span>
+            </>
+          )}
         </NavLink>
       ))}
     </nav>
