@@ -25,7 +25,7 @@ const SPEECH_PRESETS = [
 export function CommunicationAgent({ showToast }) {
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('speech')
-  const { isListening, transcript, error: sttError, startListening, stopListening } = useSpeechToText()
+  const { isListening, transcript, error: sttError, clearError, startListening, stopListening } = useSpeechToText()
   const [customText, setCustomText] = useState('')
   const [detectedSign, setDetectedSign] = useState(null)
   const { addMessage } = useAppStore()
@@ -115,7 +115,7 @@ export function CommunicationAgent({ showToast }) {
               {isListening ? <Mic className="w-10 md:w-12 h-10 md:h-12" aria-hidden="true" /> : <Mic className="w-9 md:w-10 h-9 md:h-10" aria-hidden="true" />}
             </button>
             <p className="text-sm text-slate-400">{isListening ? 'Listening... Tap to stop' : 'Tap to start speaking'}</p>
-            {sttError && <p className="text-xs text-rose-400 animate-fade-in" role="alert">⚠️ {sttError}</p>}
+            {sttError && <p className="text-xs text-amber-300 bg-amber-500/10 border border-amber-500/20 px-3 py-1.5 rounded-xl animate-fade-in flex items-center justify-between gap-2" role="status"><span>💡 {sttError}</span></p>}
 
             {/* Quick Speech Presets */}
             <div className="w-full pt-2 space-y-2 border-t border-slate-700/50 text-left">

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { Send, Mic, MicOff, Cpu, Eye, Volume2, Navigation, ShieldCheck, Sparkles } from 'lucide-react'
+import { Send, Mic, MicOff, Cpu, Eye, Volume2, Navigation, ShieldCheck, Sparkles, X } from 'lucide-react'
 import { useAppStore } from '../../store/useAppStore'
 import { chatAPI } from '../../services/api'
 import { useSpeechToText } from '../../hooks/useSpeechToText'
@@ -8,7 +8,7 @@ import { LoadingAgent } from '../Shared/LoadingAgent'
 
 export function OrchestratorChat({ showToast }) {
   const { messages, addMessage, isLoading, setLoading } = useAppStore()
-  const { isListening, transcript, error: sttError, startListening, stopListening } = useSpeechToText()
+  const { isListening, transcript, error: sttError, clearError, startListening, stopListening } = useSpeechToText()
   const [input, setInput] = useState('')
   const messagesEndRef = useRef(null)
   const inputRef = useRef(null)
@@ -124,8 +124,11 @@ export function OrchestratorChat({ showToast }) {
         </div>
       )}
       {sttError && (
-        <div className="px-3 md:px-4 py-2 bg-rose-500/10 border border-rose-500/30 rounded-xl mb-2 text-sm text-rose-400 animate-fade-in flex items-center justify-between gap-2" role="alert">
-          <span>⚠️ {sttError}</span>
+        <div className="px-3 md:px-4 py-1.5 bg-amber-500/10 border border-amber-500/30 text-amber-300 rounded-xl mb-2 text-xs flex items-center justify-between gap-2 animate-fade-in" role="status">
+          <span>💡 {sttError}</span>
+          <button onClick={clearError} className="hover:text-white p-0.5 touch-target flex items-center justify-center cursor-pointer" aria-label="Dismiss notification">
+            <X className="w-3.5 h-3.5" />
+          </button>
         </div>
       )}
 
