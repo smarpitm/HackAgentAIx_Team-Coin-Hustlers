@@ -149,23 +149,49 @@ const FileDrop = ({
         role="button"
         aria-label={preview ? "Change image" : "Upload image"}
         className={`
-          relative border-2 border-dashed rounded-lg p-8
-          transition-all duration-200 cursor-pointer
-          focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-900
+          relative overflow-hidden rounded-2xl p-8 transition-all duration-300 cursor-pointer group
+          focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-slate-950
           ${isDragging 
-            ? 'border-orange-500 bg-orange-500/10' 
-            : 'border-slate-600 hover:border-orange-500 hover:bg-slate-800/50'
+            ? 'bg-gradient-to-b from-cyan-950/40 via-amber-950/30 to-slate-950/80 shadow-2xl shadow-cyan-500/20 border-cyan-400/60' 
+            : 'liquid-glass hover:border-amber-400/50 hover:shadow-xl hover:shadow-amber-500/10'
           }
-          ${preview ? 'border-solid' : ''}
         `}
       >
+        {/* SVG Running Dashed Border Loop */}
+        <svg 
+          className="absolute inset-0 w-full h-full pointer-events-none rounded-2xl"
+          aria-hidden="true"
+        >
+          <rect 
+            x="2" 
+            y="2" 
+            width="calc(100% - 4px)" 
+            height="calc(100% - 4px)" 
+            rx="14" 
+            fill="none" 
+            stroke={isDragging ? '#06b6d4' : 'rgba(255, 184, 0, 0.35)'} 
+            strokeWidth="2" 
+            className="animate-dash-loop"
+          />
+        </svg>
+
+        {/* Hover / Drag Laser Grid Line Sweeping Overlay */}
+        {(isDragging || true) && (
+          <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+            {/* Grid Pattern */}
+            <div className="absolute inset-0 bg-[radial-gradient(#06b6d4_1px,transparent_1px)] [background-size:16px_16px] opacity-15" />
+            {/* Sweeping Laser Line */}
+            <div className="absolute left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_15px_#06b6d4] animate-laser-sweep" />
+          </div>
+        )}
+
         {preview ? (
           // Preview state
-          <div className="relative">
+          <div className="relative z-10">
             <img 
               src={preview} 
               alt="Preview" 
-              className="w-full h-auto max-h-96 object-contain rounded-lg"
+              className="w-full h-auto max-h-96 object-contain rounded-xl border border-slate-700/60 shadow-lg"
             />
             
             {/* Clear button */}
@@ -173,43 +199,45 @@ const FileDrop = ({
               onClick={handleClear}
               aria-label="Remove image"
               className="
-                absolute top-2 right-2 p-2
-                bg-red-500 hover:bg-red-600 text-white rounded-full
-                transition-colors duration-200
-                focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-slate-900
+                absolute top-3 right-3 p-2.5
+                bg-rose-500/90 hover:bg-rose-600 text-white rounded-full
+                transition-all duration-200 shadow-lg hover:scale-105
+                focus:outline-none focus:ring-2 focus:ring-rose-400
               "
             >
-              <X size={20} aria-hidden="true" />
+              <X size={18} aria-hidden="true" />
             </button>
 
             {/* File name */}
             {fileName && (
-              <div className="mt-3 text-sm text-zinc-400 text-center truncate">
+              <div className="mt-3 text-xs text-amber-300 font-display font-medium text-center truncate tracking-wide">
                 {fileName}
               </div>
             )}
           </div>
         ) : (
-          // Empty state
-          <div className="flex flex-col items-center justify-center gap-4 text-center">
-            {isDragging ? (
-              <ImageIcon size={48} className="text-orange-500 animate-bounce" aria-hidden="true" />
-            ) : (
-              <Upload size={48} className="text-zinc-400" aria-hidden="true" />
-            )}
+          // Empty state with 3D Sine Wave Floating Icon
+          <div className="relative z-10 flex flex-col items-center justify-center py-4 gap-4 text-center">
+            <div className="amber-glass-chip p-4 rounded-2xl shadow-xl animate-sine-float border border-amber-400/40">
+              {isDragging ? (
+                <ImageIcon size={44} className="text-cyan-400 animate-pulse" aria-hidden="true" />
+              ) : (
+                <Upload size={44} className="text-amber-400" aria-hidden="true" />
+              )}
+            </div>
             
             <div>
-              <p className="text-zinc-300 font-medium mb-1">
-                {isDragging ? 'Drop image here' : title}
+              <p className="text-white font-display font-bold text-base mb-1 tracking-tight">
+                {isDragging ? 'Release to drop building image' : title}
               </p>
-              <p className="text-zinc-500 text-sm">
+              <p className="text-slate-400 text-xs font-sans">
                 {description}
               </p>
             </div>
 
-            <p className="text-xs text-zinc-500">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400/80 px-3 py-1 rounded-full bg-slate-900/60 border border-amber-500/20">
               JPEG or PNG • Max {maxSizeMB}MB
-            </p>
+            </span>
           </div>
         )}
 
@@ -228,9 +256,9 @@ const FileDrop = ({
       {error && (
         <div 
           role="alert"
-          className="mt-3 p-3 bg-red-500/10 border border-red-500 rounded-lg text-red-400 text-sm"
+          className="mt-3 p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-300 text-xs flex items-center gap-2"
         >
-          {error}
+          <span>{error}</span>
         </div>
       )}
     </div>
@@ -239,3 +267,4 @@ const FileDrop = ({
 
 export { FileDrop }
 export default FileDrop
+

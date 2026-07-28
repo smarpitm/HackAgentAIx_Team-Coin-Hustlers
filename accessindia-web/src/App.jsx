@@ -111,6 +111,10 @@ export default function App() {
   const [toast, setToast] = useState(null)
   const { setUserLocation } = useAppStore()
 
+  // Parallax & Cursor Orb state (throttled with requestAnimationFrame for 60fps)
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
+  const [orbPos, setOrbPos] = useState({ x: -200, y: -200 })
+
   const showToast = useCallback((message, type = 'error') => {
     setToast({ message, type })
   }, [])
@@ -129,6 +133,38 @@ export default function App() {
     }
   }, [setUserLocation])
 
+  // Mouse movement handler with requestAnimationFrame throttling
+  useEffect(() => {
+    let animationFrameId = null
+
+    const handleMouseMove = (e) => {
+      if (animationFrameId) return
+
+      animationFrameId = requestAnimationFrame(() => {
+        const { clientX, clientY } = e
+        const { innerWidth, innerHeight } = window
+
+        // Calculate offset centered at (0, 0)
+        const offsetX = (clientX - innerWidth / 2) / (innerWidth / 2)
+        const offsetY = (clientY - innerHeight / 2) / (innerHeight / 2)
+
+        setMousePos({ x: offsetX, y: offsetY })
+        setOrbPos({ x: clientX, y: clientY })
+
+        animationFrameId = null
+      })
+    }
+
+    window.addEventListener('mousemove', handleMouseMove, { passive: true })
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove)
+      if (animationFrameId) cancelAnimationFrame(animationFrameId)
+    }
+  }, [])
+
+  // Parallax calculation for background canvas
+  const bgTransform = `translate3d(${mousePos.x * -18}px, ${mousePos.y * -18}px, 0) scale(1.05)`
+
   return (
     <>
       {/* Skip-to-content link for screen readers (WCAG AA 2.4.1) */}
@@ -136,15 +172,47 @@ export default function App() {
         Skip to content
       </a>
 
-      <div className="flex h-screen w-screen overflow-hidden bg-slate-900 text-zinc-100">
+      {/* Spatial HUD Root Container */}
+      <div className="relative flex h-screen w-screen overflow-hidden bg-slate-950 text-slate-100 selection:bg-amber-400/30 selection:text-amber-200">
+        
+        {/* 1. Global Spatial HUD Background Canvas */}
+        <div 
+          className="parallax-canvas absolute inset-0 z-0 bg-cover bg-center pointer-events-none gpu-layer transition-transform duration-300 ease-out"
+          style={{
+            backgroundImage: `url('/background.png')`,
+            transform: bgTransform
+          }}
+          aria-hidden="true"
+        />
+
+        {/* 2. Vignette Layer for Text Contrast (WCAG AA 4.5:1 ratio) */}
+        <div 
+          className="absolute inset-0 z-0 bg-gradient-to-b from-slate-950/75 via-slate-950/60 to-slate-950/90 pointer-events-none" 
+          aria-hidden="true"
+        />
+
+        {/* 3. Floating Radial Glowing Amber Orb (#FF8C00, filter: blur(120px), opacity: 0.12) */}
+        <div
+          className="cursor-follower-orb fixed z-10 pointer-events-none rounded-full gpu-layer transition-opacity duration-500"
+          style={{
+            width: '380px',
+            height: '380px',
+            background: 'radial-gradient(circle, #FF8C00 0%, rgba(255, 140, 0, 0.4) 45%, transparent 70%)',
+            filter: 'blur(110px)',
+            opacity: orbPos.x > 0 ? 0.14 : 0,
+            transform: `translate3d(${orbPos.x - 190}px, ${orbPos.y - 190}px, 0)`,
+          }}
+          aria-hidden="true"
+        />
+
         {/* Desktop sidebar */}
         <Sidebar />
 
-        {/* Main area */}
-        <div className="flex-1 flex flex-col min-w-0 overflow-y-auto pb-16 md:pb-0">
+        {/* Main content container */}
+        <div className="relative z-20 flex-1 flex flex-col min-w-0 overflow-y-auto pb-16 md:pb-0">
           <Header />
 
-          <main id="main-content" className="flex-1 bg-slate-900 overflow-y-auto p-4 md:p-6" role="main">
+          <main id="main-content" className="flex-1 overflow-y-auto p-4 md:p-6" role="main">
             <Routes>
               <Route path="/" element={<ErrorBoundary><OrchestratorChat showToast={showToast} /></ErrorBoundary>} />
               <Route path="/vision" element={<ErrorBoundary><VisionAgent showToast={showToast} /></ErrorBoundary>} />
