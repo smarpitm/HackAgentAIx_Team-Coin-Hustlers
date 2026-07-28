@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Navigation, Search, MapPin, Loader2, CheckCircle2, Building2, AlertCircle, Compass } from 'lucide-react'
+import { Navigation, Search, MapPin, Loader2, CheckCircle2, Building2, AlertCircle, Compass, Maximize2, Minimize2 } from 'lucide-react'
 import { navAPI } from '../../services/api'
 import { useGeolocation } from '../../hooks/useGeolocation'
 import { NAV_FALLBACK, NEARBY_FALLBACK } from '../../data/fallbacks'
@@ -16,6 +16,7 @@ export function NavigationAgent({ showToast }) {
   const mapInstanceRef = useRef(null)
   const markersRef = useRef([])
   const routeLineRef = useRef(null)
+  const [isFullscreen, setIsFullscreen] = useState(false)
 
   // Initialize Leaflet map when location is available
   useEffect(() => {
@@ -34,8 +35,8 @@ export function NavigationAgent({ showToast }) {
         attributionControl: true,
       })
 
-      // Dark-themed tile layer (CartoDB Dark Matter — free, no key)
-      window.L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      // Light-themed tile layer (CartoDB Voyager — free, no key)
+      window.L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
         subdomains: 'abcd',
         maxZoom: 19,
@@ -216,21 +217,46 @@ export function NavigationAgent({ showToast }) {
       {/* Map + Results */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
         <div className="lg:col-span-2 space-y-4 md:space-y-6">
-          {/* Leaflet Map Container */}
-          <div
-            ref={mapContainerRef}
-            className="agent-card h-56 md:h-72 rounded-2xl overflow-hidden z-0"
-            style={{ minHeight: '240px' }}
-            aria-label="Interactive map showing your location and route"
-          >
-            {!window.L && (
-              <div className="flex items-center justify-center h-full text-slate-500 text-center p-4">
-                <div>
-                  <MapPin className="w-6 md:w-8 h-6 md:h-8 mx-auto mb-2 opacity-40" aria-hidden="true" />
-                  <p className="text-sm">Map loading...</p>
+          {/* Leaflet Map Container with fullscreen toggle */}
+          <div className="relative">
+            <div
+              ref={mapContainerRef}
+              className={`agent-card rounded-2xl overflow-hidden z-0 transition-all duration-300 ${
+                isFullscreen
+                  ? 'fixed inset-0 z-50 rounded-none h-screen w-screen'
+                  : 'h-56 md:h-72'
+              }`}
+              style={isFullscreen ? {} : { minHeight: '240px' }}
+              aria-label="Interactive map showing your location and route"
+            >
+              {!window.L && (
+                <div className="flex items-center justify-center h-full text-slate-500 text-center p-4">
+                  <div>
+                    <MapPin className="w-6 md:w-8 h-6 md:h-8 mx-auto mb-2 opacity-40" aria-hidden="true" />
+                    <p className="text-sm">Map loading...</p>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
+            <button
+              onClick={() => {
+                setIsFullscreen((prev) => !prev)
+                // Invalidate map size after transition so tiles re-render
+                setTimeout(() => {
+                  mapInstanceRef.current?.invalidateSize()
+                }, 350)
+              }}
+              className={`absolute top-3 right-3 touch-target p-2.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-white border border-slate-600 shadow-lg backdrop-blur-md transition-all ${
+                isFullscreen ? 'z-[60]' : 'z-10'
+              }`}
+              aria-label={isFullscreen ? 'Exit fullscreen map' : 'Expand map to fullscreen'}
+              title={isFullscreen ? 'Exit fullscreen' : 'Fullscreen map'}
+            >
+              {isFullscreen
+                ? <Minimize2 className="w-5 h-5" aria-hidden="true" />
+                : <Maximize2 className="w-5 h-5" aria-hidden="true" />
+              }
+            </button>
           </div>
 
           {/* Route Steps */}
