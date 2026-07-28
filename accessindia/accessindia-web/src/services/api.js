@@ -63,4 +63,16 @@ export const auditAPI = {
   },
 }
 
+// Speech API
+export const speechAPI = {
+  transcribeAudio: async (audioBlob) => {
+    const formData = new FormData()
+    formData.append('file', audioBlob, 'speech.webm')
+    const response = await api.post('/api/speech/transcribe', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+    return response.data
+  },
+}
+
 export default api

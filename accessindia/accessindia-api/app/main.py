@@ -2,7 +2,7 @@ import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
-from app.routers import chat, vision, navigation, audit
+from app.routers import chat, vision, navigation, audit, speech
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("accessindia")
@@ -27,6 +27,7 @@ app.include_router(chat.router)
 app.include_router(vision.router)
 app.include_router(navigation.router)
 app.include_router(audit.router)
+app.include_router(speech.router)
 
 
 @app.get("/health", tags=["System"])

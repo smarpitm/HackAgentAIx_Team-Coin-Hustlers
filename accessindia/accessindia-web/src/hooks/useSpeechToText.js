@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
+import { speechAPI } from '../services/api'
 
 const DEMO_VOICE_SAMPLES = [
   'Is the main entrance accessible for wheelchairs?',
@@ -13,6 +14,9 @@ export const useSpeechToText = () => {
   const [error, setError] = useState(null)
 
   const recognitionRef = useRef(null)
+  const mediaRecorderRef = useRef(null)
+  const audioChunksRef = useRef([])
+  const streamRef = useRef(null)
   const errorTimerRef = useRef(null)
 
   const clearError = useCallback(() => {
@@ -32,9 +36,32 @@ export const useSpeechToText = () => {
     }
   }, [error])
 
-  const startListening = useCallback(() => {
+  const startListening = useCallback(async () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
     const sampleQuery = DEMO_VOICE_SAMPLES[Math.floor(Math.random() * DEMO_VOICE_SAMPLES.length)]
+
+    audioChunksRef.current = []
+
+    // Start local MediaRecorder microphone stream to capture real voice audio
+    try {
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+        streamRef.current = stream
+
+        const mediaRecorder = new MediaRecorder(stream)
+        mediaRecorderRef.current = mediaRecorder
+
+        mediaRecorder.ondataavailable = (e) => {
+          if (e.data.size > 0) {
+            audioChunksRef.current.push(e.data)
+          }
+        }
+
+        mediaRecorder.start(200)
+      }
+    } catch (micErr) {
+      console.warn('Microphone stream access warning:', micErr)
+    }
 
     if (!SpeechRecognition) {
       setError('Speech recognition is not supported in this browser.')
@@ -66,21 +93,23 @@ export const useSpeechToText = () => {
           'not-allowed': 'Mic access blocked — loaded sample voice query.',
           'service-not-allowed': 'Speech service blocked — loaded sample voice query.',
           'audio-capture': 'No mic detected — loaded sample voice query.',
-          'network': 'Speech network offline — loaded sample voice query.',
+          'network': 'Speech network offline — using local mic audio capture.',
           'aborted': 'Speech input stopped.',
         }
 
         const errorMsg = friendlyMessages[errorKey] || `Speech error: ${errorKey}`
         setError(errorMsg)
-        setIsListening(false)
 
-        if (['not-allowed', 'audio-capture', 'network', 'service-not-allowed'].includes(errorKey)) {
+        if (['not-allowed', 'audio-capture', 'service-not-allowed'].includes(errorKey)) {
+          setIsListening(false)
           setTranscript(sampleQuery)
         }
       }
 
       recognition.onend = () => {
-        setIsListening(false)
+        if (!mediaRecorderRef.current || mediaRecorderRef.current.state === 'inactive') {
+          setIsListening(false)
+        }
       }
 
       recognitionRef.current = recognition
@@ -96,17 +125,55 @@ export const useSpeechToText = () => {
     }
   }, [])
 
-  const stopListening = useCallback(() => {
+  const stopListening = useCallback(async () => {
+    // Stop Web Speech API
     if (recognitionRef.current) {
       try {
         recognitionRef.current.stop()
       } catch (err) {
-        // Ignore stop error
+        // Ignore
       }
       recognitionRef.current = null
     }
+
+    // Stop MediaRecorder and process recorded audio if Web Speech didn't return text
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      try {
+        mediaRecorderRef.current.stop()
+      } catch (err) {
+        // Ignore
+      }
+    }
+
+    // Close microphone track
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop())
+      streamRef.current = null
+    }
+
     setIsListening(false)
-  }, [])
+
+    // If Web Speech didn't output text, send recorded audio blob to backend Gemini STT endpoint
+    setTimeout(async () => {
+      if (audioChunksRef.current.length > 0 && !transcript) {
+        try {
+          const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' })
+          if (audioBlob.size > 500) {
+            const data = await speechAPI.transcribeAudio(audioBlob)
+            if (data?.transcript) {
+              setTranscript(data.transcript)
+            }
+          }
+        } catch (sttErr) {
+          console.warn('Backend audio transcription fallback notice:', sttErr)
+          if (!transcript) {
+            const sampleQuery = DEMO_VOICE_SAMPLES[Math.floor(Math.random() * DEMO_VOICE_SAMPLES.length)]
+            setTranscript(sampleQuery)
+          }
+        }
+      }
+    }, 300)
+  }, [transcript])
 
   return { isListening, transcript, error, clearError, startListening, stopListening }
 }
