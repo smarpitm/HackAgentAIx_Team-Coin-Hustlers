@@ -6,7 +6,7 @@
 
 <p align="center">
   <b>A Multi-Agent AI Ecosystem for Universal Accessibility in India</b><br/>
-  <sub>Powered by Google Gemini 2.5 Flash · Leaflet.js · OpenStreetMap · MediaPipe · Web Speech API</sub>
+  <sub>Powered by Google Gemini 2.5 Flash · Leaflet.js · OpenStreetMap · MediaPipe · Web Speech & MediaRecorder API</sub>
 </p>
 
 <p align="center">
@@ -16,27 +16,33 @@
   <img src="https://img.shields.io/badge/Maps-Leaflet.js_+_OSM-199900?style=flat-square&logo=openstreetmap&logoColor=white" />
   <img src="https://img.shields.io/badge/Compliance-RPwD_Act_2016-FF6F00?style=flat-square" />
   <img src="https://img.shields.io/badge/WCAG-AA_Compliant-228B22?style=flat-square" />
-  <img src="https://img.shields.io/badge/Tests-29_Passing-brightgreen?style=flat-square" />
+  <img src="https://img.shields.io/badge/Tests-31_Passing-brightgreen?style=flat-square" />
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/API_Keys_Required-Only_Gemini_(Free)-blueviolet?style=flat-square" />
-  <img src="https://img.shields.io/badge/Maps_&_Routing-100%25_Free-success?style=flat-square" />
+  <img src="https://img.shields.io/badge/Maps_&_Speech-100%25_Fail--Proof-success?style=flat-square" />
 </p>
+
+---
 
 ## 🏆 Team Coin Hustlers
 
 > *Building technology that breaks barriers, not people.*
+
+---
 
 ## 🧠 What is AccessIndia AI?
 
 **AccessIndia AI** is a multi-agent AI-powered accessibility platform designed to empower **80+ million persons with disabilities in India**. It combines five specialized AI agents into a single, cohesive ecosystem that can:
 
 - 👁️ **See** — Extract text from signs, documents, and medicine labels via OCR and describe visual scenes for blind users
-- 🗣️ **Communicate** — Bridge speech and sign language barriers with real-time recognition and synthesis
-- 🗺️ **Navigate** — Find wheelchair-accessible walking routes and nearby accessible hospitals, pharmacies, and transit stops
+- 🗣️ **Communicate** — Bridge speech and sign language barriers with dual-engine speech recognition, custom prompt presets, and live gesture tracking
+- 🗺️ **Navigate** — Find wheelchair-accessible walking routes and nearby accessible hospitals, pharmacies, and transit stops on an interactive light-themed map with fullscreen controls
 - 📋 **Audit** — Evaluate buildings against India's **RPwD Act 2016** and **CPWD Barrier-Free Guidelines** using just a photo
 - 🤖 **Orchestrate** — A central AI brain that understands user intent and automatically routes requests to the right specialist agent
+
+---
 
 ## 🏗️ Architecture Overview
 
@@ -46,39 +52,42 @@
 ├─────────────────────────────────────────────────────────────┤
 │                                                             │
 │  ┌─────────────────────────────────────────────────────┐    │
-│  │              React 18 Web Client                    │    │
+│  │              React 18 Web Client                     │    │
 │  │  ┌──────────┐ ┌──────────┐ ┌──────────────────────┐ │    │
 │  │  │ Sidebar  │ │  Header  │ │  Mobile Bottom Nav   │ │    │
 │  │  └──────────┘ └──────────┘ └──────────────────────┘ │    │
-│  │                                                     │    │
+│  │                                                      │    │
 │  │  ┌──────────────────────────────────────────────┐   │    │
-│  │  │            5 Agent Views (Routes)            │   │    │
+│  │  │            5 Agent Views (Routes)             │   │    │
 │  │  │  / Chat  /vision  /communication             │   │    │
-│  │  │          /navigation  /audit                 │   │    │
+│  │  │          /navigation  /audit                  │   │    │
 │  │  └──────────────────────────────────────────────┘   │    │
-│  │                                                     │    │
-│  │  Shared: TTSButton │ FileDrop │ CameraFeed │ Loading│    │
-│  │  Hooks:  useSpeechToText │ useTextToSpeech          │    │
-│  │          useMediaPipe │ useGeolocation              │    │
+│  │                                                      │    │
+│  │  Shared: TTSButton │ FileDrop │ CameraFeed │ Loading │    │
+│  │  Hooks:  useSpeechToText (Dual Engine)               │    │
+│  │          useTextToSpeech │ useMediaPipe │useGeolocation│    │
 │  │  State:  Zustand (useAppStore)                      │    │
 │  └─────────────────────────────────────────────────────┘    │
-│                           │ Axios                           │
-│                           ▼                                 │
+│                           │ Axios                            │
+│                           ▼                                  │
 │  ┌─────────────────────────────────────────────────────┐    │
-│  │              FastAPI Backend (Python)               │    │
-│  │                                                     │    │
+│  │              FastAPI Backend (Python)                │    │
+│  │                                                      │    │
 │  │  Routers:  /api/chat  /api/vision/analyze           │    │
-│  │            /api/nav/route  /api/nav/nearby          │    │
-│  │            /api/audit/analyze  /health              │    │
-│  │                                                     │    │
-│  │  Agents:  Orchestrator │ Vision │ Navigation │ Audit│    │
-│  │                                                     │    │
-│  │  AI:       Google Gemini 2.5 Flash (generative AI)  │    │
+│  │            /api/speech/transcribe                    │    │
+│  │            /api/nav/route  /api/nav/nearby           │    │
+│  │            /api/audit/analyze  /health               │    │
+│  │                                                      │    │
+│  │  Agents:   Orchestrator │ Vision │ Navigation │ Audit│    │
+│  │                                                      │    │
+│  │  AI:       Google Gemini 2.5 Flash (Text, Vision, Audio)│
 │  │  Maps:     Nominatim + OSRM + Overpass (all free)   │    │
 │  └─────────────────────────────────────────────────────┘    │
-│                                                             │
+│                                                              │
 └─────────────────────────────────────────────────────────────┘
 ```
+
+---
 
 ## 🤖 The Five Agents
 
@@ -88,7 +97,7 @@ The **brain** of AccessIndia AI. Uses Gemini 2.5 Flash to classify user intent f
 **Features:**
 - Natural language intent classification (vision, navigation, communication, audit)
 - Agent badge + confidence score display on every response
-- Speech-to-Text microphone input (Web Speech API)
+- Dual-engine speech-to-text microphone input + 1-click voice query sample chips
 - Text-to-Speech audio playback on all agent responses
 - Graceful offline fallback with heuristic rule engine
 
@@ -106,17 +115,19 @@ Extracts text and describes visual scenes for blind and visually impaired users 
 Bridges communication barriers for deaf, mute, and speech-impaired users.
 
 **Features:**
-- **Speech Tab**: Real-time speech-to-text transcription via `webkitSpeechRecognition`
-- **Sign Language Tab**: Live webcam hand gesture detection via MediaPipe Hands
-- Supported gestures: Hello/Namaste 👋, Yes 👍, No 👎, Peace ✌️, Wait ☝️, ILY 🤟
+- **Speech Tab**: Dual-engine speech recognition (Web Speech API + local MediaRecorder mic stream sending audio to Gemini 2.5 Flash)
+- **Editable Transcript Panel**: Type, edit, or paste speech text directly at any time
+- **Quick Voice Presets**: 4 one-click preset prompt buttons (hospital search, wheelchair ramp, elevator, restroom)
+- **Ask AI Button**: Send transcribed speech straight to the AI Assistant
+- **Sign Language Tab**: Live webcam hand gesture detection via MediaPipe Hands (👋, 👍, 👎, ✌️, ☝️, 🤟)
 - TTS playback of transcribed speech
-- Zero external API keys required (100% browser-native + CDN)
 
 ### 4. 🗺️ Navigation Agent (`/navigation`)
 Finds wheelchair-accessible walking routes and nearby accessible facilities using **100% free OpenStreetMap infrastructure**.
 
 **Features:**
-- Interactive dark-themed Leaflet.js map (CartoDB Dark Matter tiles)
+- Interactive CartoDB Voyager light-themed Leaflet.js map
+- **Fullscreen Mode**: Maximize/minimize map with top-right toggle button (<kbd>⤢</kbd> / <kbd>⤡</kbd>)
 - Walking route calculation via OSRM (Open Source Routing Machine)
 - Destination geocoding via Nominatim (biased to India)
 - Nearby hospital/pharmacy/clinic search via Overpass API
@@ -139,6 +150,18 @@ Evaluates building photos against India's **RPwD Act 2016** and **CPWD Harmonise
 - TTS "Read Report" for full audit summary
 - Animated score progress bar
 
+---
+
+## 🎙️ Dual-Engine Speech Recognition Architecture
+
+AccessIndia AI uses a **fail-proof dual-engine speech recognition system**:
+
+1. **Primary Engine**: Web Speech API (`webkitSpeechRecognition`) for live client-side speech-to-text.
+2. **Secondary Engine**: Local W3C MediaRecorder mic stream sending audio to FastAPI `POST /api/speech/transcribe`, where **Gemini 2.5 Flash audio model** transcribes spoken words verbatim.
+3. **Auto-Dismiss Hints**: Replaced obstructive alert banners with clean, 3.5-second auto-dismissing hint badges (`💡`) and manual close buttons.
+
+---
+
 ## ♿ Accessibility Compliance (WCAG AA)
 
 AccessIndia AI is built **accessibility-first**:
@@ -148,11 +171,13 @@ AccessIndia AI is built **accessibility-first**:
 | **WCAG 2.4.1** Skip Navigation | Skip-to-content link on first Tab press |
 | **WCAG 2.4.7** Focus Visible | Orange focus rings on all interactive elements |
 | **WCAG 2.5.5** Touch Target | Minimum 44×44px touch targets on all buttons |
-| **WCAG 1.4.3** Contrast | High-contrast dark theme (slate-900 background, white text) |
+| **WCAG 1.4.3** Contrast | High-contrast theme with clear typography |
 | **WCAG 1.3.1** Semantic HTML | Proper `<section>`, `<nav>`, `<main>`, `role` attributes |
 | **WCAG 4.1.2** ARIA Labels | All icon buttons have descriptive `aria-label` attributes |
 | **WCAG 1.1.1** Alt Text | All images have meaningful `alt` descriptions |
 | **Screen Reader** | `aria-live` regions for dynamic content updates |
+
+---
 
 ## 🛠️ Tech Stack
 
@@ -165,15 +190,17 @@ AccessIndia AI is built **accessibility-first**:
 | **Icons** | Lucide React | Accessible SVG icon library |
 | **HTTP** | Axios | API client with interceptors |
 | **Backend** | FastAPI + Uvicorn | High-performance async Python API |
-| **AI Model** | Google Gemini 2.5 Flash | Multimodal generative AI (text + vision) |
-| **Maps** | Leaflet.js 1.9.4 | Interactive map rendering |
-| **Tiles** | CartoDB Dark Matter | Dark-themed OpenStreetMap tiles |
+| **AI Model** | Google Gemini 2.5 Flash | Multimodal generative AI (text + vision + audio) |
+| **Maps** | Leaflet.js 1.9.4 | Interactive map rendering with fullscreen toggle |
+| **Tiles** | CartoDB Voyager | Crisp light-themed OpenStreetMap tiles |
 | **Geocoding** | Nominatim (OSM) | Free address-to-coordinate lookup |
 | **Routing** | OSRM | Free walking route calculation |
 | **Places** | Overpass API (OSM) | Free nearby facility search |
 | **Hand Tracking** | MediaPipe Hands | Real-time hand landmark detection |
-| **Speech** | Web Speech API | Browser-native STT & TTS |
+| **Speech** | Web Speech + MediaRecorder API | Fail-proof dual-engine STT & TTS |
 | **Testing** | Vitest + Pytest | Frontend & backend test suites |
+
+---
 
 ## 🚀 Quick Start
 
@@ -221,9 +248,11 @@ npm run dev
 
 Frontend runs at `http://localhost:5173`
 
-## 🧪 Testing
+---
 
-### Backend (Pytest) — 13 tests
+## 🧪 Testing — 31 Tests Passing
+
+### Backend (Pytest) — 15 tests
 
 ```bash
 cd accessindia/accessindia-api
@@ -235,6 +264,7 @@ tests/test_audit.py      ✅ 2 passed  (invalid format, valid image audit)
 tests/test_chat.py       ✅ 4 passed  (vision/nav/audit/general intent routing)
 tests/test_health.py     ✅ 1 passed  (health check endpoint)
 tests/test_navigation.py ✅ 3 passed  (route calc, nearby search, coord validation)
+tests/test_speech.py     ✅ 2 passed  (invalid file, audio STT transcription)
 tests/test_vision.py     ✅ 3 passed  (invalid format, no file, valid image OCR)
 ```
 
@@ -253,6 +283,8 @@ VisionAgent.test.jsx       ✅ 3 passed
 App.test.jsx               ✅ 3 passed
 ```
 
+---
+
 ## 📁 Project Structure
 
 ```
@@ -267,6 +299,7 @@ accessindia/
 │   │   ├── routers/
 │   │   │   ├── chat.py              # POST /api/chat
 │   │   │   ├── vision.py            # POST /api/vision/analyze
+│   │   │   ├── speech.py            # POST /api/speech/transcribe
 │   │   │   ├── navigation.py        # POST /api/nav/route + GET /api/nav/nearby
 │   │   │   └── audit.py             # POST /api/audit/analyze
 │   │   ├── utils/
@@ -295,7 +328,7 @@ accessindia/
 │   │   │       ├── CameraFeed.jsx
 │   │   │       └── LoadingAgent.jsx
 │   │   ├── hooks/
-│   │   │   ├── useSpeechToText.js
+│   │   │   ├── useSpeechToText.js    # Dual-engine speech recognition hook
 │   │   │   ├── useTextToSpeech.js
 │   │   │   ├── useMediaPipe.js
 │   │   │   └── useGeolocation.js
@@ -317,6 +350,8 @@ accessindia/
 │   └── package.json
 ```
 
+---
+
 ## 🌐 API Endpoints
 
 | Method | Endpoint | Description |
@@ -324,24 +359,29 @@ accessindia/
 | `GET` | `/health` | System health check |
 | `POST` | `/api/chat` | Orchestrator — classify intent & route to agent |
 | `POST` | `/api/vision/analyze` | Vision — OCR + scene description from image |
+| `POST` | `/api/speech/transcribe` | Speech — Gemini 2.5 Flash audio transcription |
 | `POST` | `/api/nav/route` | Navigation — walking route via OSRM |
 | `GET` | `/api/nav/nearby` | Navigation — nearby accessible facilities |
 | `POST` | `/api/audit/analyze` | Audit — RPwD compliance score from building photo |
+
+---
 
 ## 💰 Cost Breakdown
 
 | Component | Provider | Cost |
 | :--- | :--- | :---: |
-| AI (Chat, Vision, Audit) | Google Gemini 2.5 Flash | **Free Tier** |
-| Map Tiles | CartoDB / OpenStreetMap | **Free** |
+| AI (Chat, Vision, Speech, Audit) | Google Gemini 2.5 Flash | **Free Tier** |
+| Map Tiles | CartoDB Voyager / OSM | **Free** |
 | Walking Routes | OSRM | **Free** |
 | Geocoding | Nominatim | **Free** |
 | Nearby Search | Overpass API | **Free** |
-| Speech Recognition | Web Speech API | **Free** |
+| Speech Recognition | Dual-Engine Web Speech + Gemini | **Free** |
 | Text-to-Speech | Web Speech Synthesis | **Free** |
 | Sign Language Detection | MediaPipe Hands | **Free** |
 
 > **Total running cost: $0/month** (only Gemini API key required, free tier is sufficient)
+
+---
 
 ## 📜 Regulatory Alignment
 
@@ -350,6 +390,8 @@ This platform is built in alignment with:
 - **🇮🇳 Rights of Persons with Disabilities (RPwD) Act, 2016** — India's landmark disability rights legislation mandating accessibility in public buildings, transport, and digital services.
 - **🏗️ CPWD Harmonised Guidelines for Barrier-Free Built Environment** — India's architectural standards for ramp gradients (≤1:12), door widths (≥900mm), tactile paving, handrail heights, and elevator accessibility.
 - **🌐 WCAG 2.1 Level AA** — Web Content Accessibility Guidelines ensuring the platform itself is usable by persons with disabilities.
+
+---
 
 <p align="center">
   <b>Built with ❤️ by Team Coin Hustlers</b><br/>
