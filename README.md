@@ -218,7 +218,7 @@ cd HackAgentAIx_Team-Coin-Hustlers
 
 ### 2. Configure Environment
 
-Create `accessindia/accessindia-api/.env`:
+Create `accessindia-api/.env`:
 
 ```env
 GEMINI_API_KEY=your_gemini_api_key_here
@@ -231,7 +231,7 @@ CORS_ORIGINS=http://localhost:5173,http://127.0.0.1:5173,http://localhost:3000
 ### 3. Start the Backend
 
 ```bash
-cd accessindia/accessindia-api
+cd accessindia-api
 pip install -r requirements.txt
 python -m app.main
 ```
@@ -241,7 +241,7 @@ Backend runs at `http://localhost:8000`
 ### 4. Start the Frontend
 
 ```bash
-cd accessindia/accessindia-web
+cd accessindia-web
 npm install
 npm run dev
 ```
@@ -255,7 +255,7 @@ Frontend runs at `http://localhost:5173`
 ### Backend (Pytest) — 15 tests
 
 ```bash
-cd accessindia/accessindia-api
+cd accessindia-api
 pytest -v
 ```
 
@@ -271,7 +271,7 @@ tests/test_vision.py     ✅ 3 passed  (invalid format, no file, valid image OCR
 ### Frontend (Vitest) — 16 tests
 
 ```bash
-cd accessindia/accessindia-web
+cd accessindia-web
 npm test
 ```
 
