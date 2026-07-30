@@ -271,4 +271,3 @@ const VisionAgent = () => {
 
 export { VisionAgent }
 export default VisionAgent
-export { VisionAgent }

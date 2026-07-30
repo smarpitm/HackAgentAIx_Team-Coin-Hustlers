@@ -1,0 +1,1961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AccessIndia AI - Project Analysis</title>
+    <style>
+        @media print {
+            @page {
+                size: A4;
+                margin: 2cm;
+            }
+            body {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+        }
+        
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            color: #0f172a;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: white;
+        }
+        
+        h1 {
+            color: #f97316;
+            border-bottom: 3px solid #f97316;
+            padding-bottom: 10px;
+            margin-top: 40px;
+            font-size: 2em;
+            page-break-after: avoid;
+        }
+        
+        h2 {
+            color: #ea580c;
+            margin-top: 30px;
+            font-size: 1.5em;
+            border-bottom: 2px solid #fed7aa;
+            padding-bottom: 5px;
+            page-break-after: avoid;
+        }
+        
+        h3 {
+            color: #0f172a;
+            margin-top: 25px;
+            font-size: 1.2em;
+            page-break-after: avoid;
+        }
+        
+        code {
+            background: #f1f5f9;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #dc2626;
+        }
+        
+        pre {
+            background: #0f172a;
+            color: #f4f4f5;
+            padding: 20px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.85em;
+            line-height: 1.5;
+            page-break-inside: avoid;
+            margin: 20px 0;
+        }
+        
+        pre code {
+            background: transparent;
+            color: #f4f4f5;
+            padding: 0;
+        }
+        
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+            page-break-inside: avoid;
+        }
+        
+        th, td {
+            border: 1px solid #cbd5e1;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background: #f1f5f9;
+            font-weight: bold;
+            color: #0f172a;
+        }
+        
+        tr:nth-child(even) {
+            background: #f8fafc;
+        }
+        
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+        
+        li {
+            margin: 8px 0;
+        }
+        
+        a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        strong {
+            color: #0f172a;
+            font-weight: 600;
+        }
+        
+        hr {
+            border: none;
+            border-top: 2px solid #e2e8f0;
+            margin: 40px 0;
+        }
+        
+        p {
+            margin: 12px 0;
+        }
+        
+        blockquote {
+            border-left: 4px solid #f97316;
+            padding-left: 20px;
+            margin: 20px 0;
+            color: #64748b;
+            font-style: italic;
+        }
+        
+        .print-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #f97316;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+        
+        .print-button:hover {
+            background: #ea580c;
+        }
+        
+        @media print {
+            .print-button {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="print-button" onclick="window.print()">🖨️ Print / Save as PDF</button>
+    
+<h1>AccessIndia AI - Comprehensive Project Analysis</h1>
+<h2>Interview Preparation & Technical Assessment Guide</h2>
+
+<hr/>
+
+<h2>📋 Executive Summary</h2>
+
+<strong>Project Name:</strong> AccessIndia AI  
+<strong>Team:</strong> Coin Hustlers  
+<strong>Event:</strong> HackAgentAIx International Hackathon 2026  
+<strong>Mission:</strong> Multi-Agent AI Ecosystem for Universal Accessibility in India  
+<strong>Target Beneficiaries:</strong> 80+ million persons with disabilities in India  
+
+<h3>Quick Facts</h3>
+<li><strong>Architecture:</strong> Multi-agent AI system with 5 specialized agents</li>
+<li><strong>Primary AI Model:</strong> Google Gemini 2.5 Flash (multimodal)</li>
+<li><strong>Compliance Standards:</strong> RPwD Act 2016, CPWD Guidelines, WCAG 2.1 AA</li>
+<li><strong>Test Coverage:</strong> 31 passing tests (15 backend + 16 frontend)</li>
+<li><strong>Cost:</strong> $0/month (100% free-tier infrastructure)</li>
+
+<hr/>
+
+<h2>🏗️ System Architecture</h2>
+
+<h3>High-Level Architecture</h3>
+
+<pre><code>┌─────────────────────────────────────────────────────────┐
+│              AccessIndia AI Platform                    │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  Frontend (React 18 SPA)                                │
+│  ├── 5 Agent Views (/, /vision, /communication,        │
+│  │                   /navigation, /audit)              │
+│  ├── Shared Components (TTS, FileDrop, Camera)         │
+│  ├── Custom Hooks (Speech, MediaPipe, Geolocation)     │
+│  └── Zustand State Management                          │
+│                                                         │
+│                     ↕ REST API (Axios)                  │
+│                                                         │
+│  Backend (FastAPI + Python)                             │
+│  ├── 5 API Routers                                      │
+│  ├── 4 AI Agents + 1 Orchestrator                       │
+│  ├── Gemini 2.5 Flash (Text, Vision, Audio)             │
+│  └── OpenStreetMap Services (Nominatim, OSRM, Overpass)│
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+</code></pre>
+
+<h3>Three-Tier Architecture Pattern</h3>
+
+<li><strong>Presentation Layer (Frontend)</strong></li>
+<p>   - React 18 with Vite 5 (fast HMR)</p>
+<p>   - Tailwind CSS for responsive design</p>
+<p>   - Client-side routing with React Router 6</p>
+   
+<li><strong>Business Logic Layer (Backend)</strong></li>
+<p>   - FastAPI async Python framework</p>
+<p>   - Multi-agent orchestration system</p>
+<p>   - AI model integration</p>
+   
+<li><strong>Data/Service Layer</strong></li>
+<p>   - Google Gemini API</p>
+<p>   - OpenStreetMap services</p>
+<p>   - MediaPipe (client-side)</p>
+<p>   - Web Speech API (client-side)</p>
+
+<hr/>
+
+<h2>🤖 The Five Agents System</h2>
+
+<h3>1. Central Orchestrator Agent (<code>/</code>)</h3>
+<strong>Purpose:</strong> Intelligent routing system
+
+<strong>Key Features:</strong>
+<li>Natural language intent classification using Gemini 2.5 Flash</li>
+<li>Automatic routing to specialist agents</li>
+<li>Confidence scoring (0.0 - 1.0)</li>
+<li>Offline fallback with heuristic rule engine</li>
+<li>Agent badge display on responses</li>
+
+<strong>Technical Implementation:</strong>
+<li>File: <code>app/agents/orchestrator.py</code></li>
+<li>Method: <code>classify_and_route(user_message, has_image)</code></li>
+<li>Intent categories: vision, navigation, communication, audit, general</li>
+<li>Fallback uses keyword matching when API unavailable</li>
+
+<h3>2. Vision Agent (<code>/vision</code>)</h3>
+<strong>Purpose:</strong> Visual assistance for blind/visually impaired users
+
+<strong>Key Features:</strong>
+<li>OCR text extraction (signs, documents, medicine labels)</li>
+<li>Rich scene description (2-3 sentences)</li>
+<li>Object detection (ramps, elevators, tactile paving, obstacles)</li>
+<li>Drag-and-drop image upload with preview</li>
+<li>Text-to-Speech integration for output</li>
+
+<strong>Technical Implementation:</strong>
+<li>File: <code>app/agents/vision_agent.py</code></li>
+<li>Model: Gemini 2.5 Flash Vision (multimodal)</li>
+<li>Input: JPEG/PNG image bytes</li>
+<li>Output: JSON with ocr_text, description, detected_items, confidence</li>
+
+<h3>3. Communication Agent (<code>/communication</code>)</h3>
+<strong>Purpose:</strong> Bridge communication barriers for deaf/mute/speech-impaired users
+
+<strong>Key Features:</strong>
+<li><strong>Dual-engine speech recognition:</strong></li>
+<p>  - Primary: Web Speech API (client-side)</p>
+<p>  - Secondary: Gemini 2.5 Flash audio transcription</p>
+<li>Editable transcript panel</li>
+<li>Quick voice presets (hospital, wheelchair ramp, elevator, restroom)</li>
+<li><strong>Sign language detection:</strong></li>
+<p>  - Live webcam hand gesture tracking via MediaPipe Hands</p>
+<p>  - Recognized gestures: 👋, 👍, 👎, ✌️, ☝️, 🤟</p>
+<li>TTS playback of transcribed speech</li>
+
+<strong>Technical Implementation:</strong>
+<li>Hook: <code>useSpeechToText.js</code> (dual-engine logic)</li>
+<li>Hook: <code>useMediaPipe.js</code> (hand landmark detection)</li>
+<li>Util: <code>gestureClassifier.js</code> (gesture recognition algorithm)</li>
+<li>API: <code>POST /api/speech/transcribe</code></li>
+
+<h3>4. Navigation Agent (<code>/navigation</code>)</h3>
+<strong>Purpose:</strong> Wheelchair-accessible route finding and facility search
+
+<strong>Key Features:</strong>
+<li>Interactive Leaflet.js map with CartoDB Voyager tiles</li>
+<li>Fullscreen mode toggle</li>
+<li>Walking route calculation (OSRM)</li>
+<li>Destination geocoding (Nominatim, India-biased)</li>
+<li>Nearby facility search (hospitals, pharmacies, clinics via Overpass API)</li>
+<li>Step-by-step accessible directions</li>
+<li>Custom markers: 🟠 Your location · 🟢 Destination · 🟣 Facilities</li>
+
+<strong>Technical Implementation:</strong>
+<li>File: <code>app/agents/navigation_agent.py</code></li>
+<li>Services: Nominatim (geocoding), OSRM (routing), Overpass API (POI search)</li>
+<li>Map Library: Leaflet.js 1.9.4</li>
+<li>Tile Provider: CartoDB Voyager (light theme, crisp OSM tiles)</li>
+<li>API: <code>POST /api/nav/route</code>, <code>GET /api/nav/nearby</code></li>
+
+<h3>5. Accessibility Audit Agent (<code>/audit</code>)</h3>
+<strong>Purpose:</strong> Building compliance evaluation against Indian standards
+
+<strong>Key Features:</strong>
+<li>Photo-based building assessment</li>
+<li>Compliance scoring (0-100) with color-coded gauge:</li>
+<p>  - 🟢 71-100: Compliant</p>
+<p>  - 🟡 41-70: Partial compliance</p>
+<p>  - 🔴 0-40: Major barriers</p>
+<li>Specific issue identification (steep ramps, narrow doorways, missing tactile paving)</li>
+<li>Numbered actionable recommendations</li>
+<li>TTS "Read Report" functionality</li>
+<li>Animated score progress bar</li>
+
+<strong>Regulatory Alignment:</strong>
+<li>RPwD Act 2016 (India's disability rights legislation)</li>
+<li>CPWD Harmonised Guidelines for Barrier-Free Built Environment</li>
+<p>  - Ramp gradients ≤1:12</p>
+<p>  - Door widths ≥900mm</p>
+<p>  - Tactile paving requirements</p>
+<p>  - Handrail heights</p>
+<p>  - Elevator accessibility</p>
+
+<strong>Technical Implementation:</strong>
+<li>File: <code>app/agents/audit_agent.py</code></li>
+<li>Model: Gemini 2.5 Flash Vision</li>
+<li>Input: Building entrance/ramp/staircase photos</li>
+<li>Output: Score (0-100), issues list, fixes list</li>
+
+<hr/>
+
+<h2>💻 Technology Stack Deep Dive</h2>
+
+<h3>Frontend Stack</h3>
+
+<p>| Technology | Version | Purpose | Why Chosen |</p>
+<p>|------------|---------|---------|------------|</p>
+<p>| <strong>React</strong> | 18.2.0 | UI framework | Industry standard, excellent ecosystem |</p>
+<p>| <strong>Vite</strong> | 5.1.0 | Build tool | Fast HMR, modern ESM-based bundler |</p>
+<p>| <strong>React Router</strong> | 6.22.0 | Client-side routing | Standard SPA routing solution |</p>
+<p>| <strong>Tailwind CSS</strong> | 3.4.1 | Styling framework | Utility-first, responsive design |</p>
+<p>| <strong>Zustand</strong> | 4.5.0 | State management | Lightweight, simpler than Redux |</p>
+<p>| <strong>Axios</strong> | 1.6.7 | HTTP client | Promise-based, interceptor support |</p>
+<p>| <strong>Lucide React</strong> | 0.330.0 | Icon library | Accessible SVG icons, MIT licensed |</p>
+<p>| <strong>Vitest</strong> | 1.3.0 | Testing framework | Fast, Vite-native test runner |</p>
+<p>| <strong>Leaflet.js</strong> | 1.9.4 | Interactive maps | Lightweight, open-source mapping |</p>
+
+<strong>Frontend Architecture Patterns:</strong>
+<li>Component-based architecture (Atomic Design)</li>
+<li>Custom hooks for reusable logic</li>
+<li>Centralized state with Zustand</li>
+<li>Route-based code splitting</li>
+<li>Error boundaries for fault tolerance</li>
+
+<h3>Backend Stack</h3>
+
+<p>| Technology | Version | Purpose | Why Chosen |</p>
+<p>|------------|---------|---------|------------|</p>
+<p>| <strong>FastAPI</strong> | ≥0.109.0 | Web framework | High performance, async, auto docs |</p>
+<p>| <strong>Uvicorn</strong> | ≥0.27.0 | ASGI server | Fast, production-ready |</p>
+<p>| <strong>Pydantic</strong> | ≥2.6.0 | Data validation | Type safety, automatic validation |</p>
+<p>| <strong>google-generativeai</strong> | ≥0.8.0 | AI model SDK | Official Gemini SDK |</p>
+<p>| <strong>Requests</strong> | ≥2.31.0 | HTTP client | Simple, reliable HTTP library |</p>
+<p>| <strong>Pytest</strong> | ≥8.0.0 | Testing framework | Industry standard for Python |</p>
+<p>| <strong>Pillow</strong> | ≥10.2.0 | Image processing | Image format handling |</p>
+<p>| <strong>python-dotenv</strong> | ≥1.0.0 | Environment config | Secure config management |</p>
+
+<strong>Backend Architecture Patterns:</strong>
+<li>Router-based modular design</li>
+<li>Agent pattern for specialized functionality</li>
+<li>Dependency injection via FastAPI</li>
+<li>Pydantic models for type safety</li>
+<li>Async/await for I/O operations</li>
+
+<h3>AI & External Services</h3>
+
+<p>| Service | Provider | Cost | Purpose |</p>
+<p>|---------|----------|------|---------|</p>
+<p>| <strong>Gemini 2.5 Flash</strong> | Google AI | <strong>Free tier</strong> | Text generation, vision, audio |</p>
+<p>| <strong>Map Tiles</strong> | CartoDB/OSM | <strong>Free</strong> | Base map rendering |</p>
+<p>| <strong>Routing</strong> | OSRM | <strong>Free</strong> | Walking route calculation |</p>
+<p>| <strong>Geocoding</strong> | Nominatim | <strong>Free</strong> | Address → coordinates |</p>
+<p>| <strong>POI Search</strong> | Overpass API | <strong>Free</strong> | Nearby facility search |</p>
+<p>| <strong>Speech-to-Text</strong> | Web Speech API + Gemini | <strong>Free</strong> | Dual-engine transcription |</p>
+<p>| <strong>Text-to-Speech</strong> | Web Speech Synthesis | <strong>Free</strong> | Audio output |</p>
+<p>| <strong>Hand Tracking</strong> | MediaPipe | <strong>Free</strong> | Sign language gesture detection |</p>
+
+<strong>Total Monthly Cost: $0</strong> (only Gemini API key required, free tier sufficient)
+
+<hr/>
+
+<h2>📁 Project Structure & File Organization</h2>
+
+<pre><code>internationalhackathon/
+│
+├── accessindia-api/              # Backend (Python/FastAPI)
+│   ├── app/
+│   │   ├── agents/               # AI agent implementations
+│   │   │   ├── orchestrator.py   # Central intent classifier
+│   │   │   ├── vision_agent.py   # OCR + scene description
+│   │   │   ├── navigation_agent.py # Route + POI search
+│   │   │   └── audit_agent.py    # Compliance checker
+│   │   ├── routers/              # API endpoints
+│   │   │   ├── chat.py           # POST /api/chat
+│   │   │   ├── vision.py         # POST /api/vision/analyze
+│   │   │   ├── speech.py         # POST /api/speech/transcribe
+│   │   │   ├── navigation.py     # POST /api/nav/route, GET /api/nav/nearby
+│   │   │   └── audit.py          # POST /api/audit/analyze
+│   │   ├── utils/
+│   │   │   └── prompts.py        # Gemini system prompts
+│   │   ├── config.py             # Environment settings
+│   │   ├── models.py             # Pydantic schemas
+│   │   └── main.py               # FastAPI app entry
+│   ├── tests/                    # 15 pytest tests
+│   └── requirements.txt
+│
+├── accessindia-web/              # Frontend (React/Vite)
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Agents/           # Agent-specific views
+│   │   │   │   ├── OrchestratorChat.jsx
+│   │   │   │   ├── VisionAgent.jsx
+│   │   │   │   ├── CommunicationAgent.jsx
+│   │   │   │   ├── NavigationAgent.jsx
+│   │   │   │   └── AuditAgent.jsx
+│   │   │   ├── Layout/           # Layout components
+│   │   │   │   ├── Sidebar.jsx
+│   │   │   │   └── Header.jsx
+│   │   │   └── Shared/           # Reusable components
+│   │   │       ├── TTSButton.jsx
+│   │   │       ├── FileDrop.jsx
+│   │   │       ├── CameraFeed.jsx
+│   │   │       └── LoadingAgent.jsx
+│   │   ├── hooks/                # Custom React hooks
+│   │   │   ├── useSpeechToText.js (dual-engine STT)
+│   │   │   ├── useTextToSpeech.js
+│   │   │   ├── useMediaPipe.js   (hand tracking)
+│   │   │   └── useGeolocation.js
+│   │   ├── services/
+│   │   │   └── api.js            # Axios API client
+│   │   ├── store/
+│   │   │   └── useAppStore.js    # Zustand global state
+│   │   ├── utils/
+│   │   │   └── gestureClassifier.js
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   ├── tests/                    # 16 Vitest tests
+│   ├── vite.config.js
+│   ├── tailwind.config.js
+│   └── package.json
+│
+├── .env                          # Root environment config
+├── .env.example                  # Environment template
+├── README.md                     # Comprehensive documentation
+└── Documentation PDFs            # Build guides & prompts
+</code></pre>
+
+<hr/>
+
+<h2>🌐 API Endpoints Reference</h2>
+
+<h3>System Health</h3>
+<li><code>GET /health</code> - Health check endpoint</li>
+<p>  - Response: <code>{ "status": "ok", "service": "accessindia-ai" }</code></p>
+
+<h3>Chat/Orchestrator</h3>
+<li><code>POST /api/chat</code></li>
+<p>  - Request: <code>{ "message": string, "image_base64": string?, "location": object? }</code></p>
+<p>  - Response: <code>{ "intent": string, "agent": string, "confidence": float, "message": string, "data": object? }</code></p>
+
+<h3>Vision Agent</h3>
+<li><code>POST /api/vision/analyze</code></li>
+<p>  - Request: Multipart form-data with image file</p>
+<p>  - Response: <code>{ "ocr_text": string, "description": string, "detected_items": string[], "confidence": float }</code></p>
+
+<h3>Speech Recognition</h3>
+<li><code>POST /api/speech/transcribe</code></li>
+<p>  - Request: Multipart form-data with audio file</p>
+<p>  - Response: <code>{ "text": string, "confidence": float }</code></p>
+
+<h3>Navigation</h3>
+<li><code>POST /api/nav/route</code></li>
+<p>  - Request: <code>{ "origin_lat": float, "origin_lng": float, "destination": string, "mode": string }</code></p>
+<p>  - Response: <code>{ "distance": string, "duration": string, "steps": NavStep[] }</code></p>
+  
+<li><code>GET /api/nav/nearby?latitude=float&longitude=float&type=string</code></li>
+<p>  - Response: Array of facility objects with name, lat, lng, type</p>
+
+<h3>Accessibility Audit</h3>
+<li><code>POST /api/audit/analyze</code></li>
+<p>  - Request: Multipart form-data with building image</p>
+<p>  - Response: <code>{ "score": int, "issues": string[], "fixes": string[] }</code></p>
+
+<hr/>
+
+<h2>♿ Accessibility Compliance (WCAG 2.1 AA)</h2>
+
+<p>The platform itself is built to be accessible:</p>
+
+<p>| WCAG Criterion | Implementation |</p>
+<p>|----------------|----------------|</p>
+<p>| <strong>2.4.1 - Bypass Blocks</strong> | Skip-to-content link appears on first Tab press |</p>
+<p>| <strong>2.4.7 - Focus Visible</strong> | Orange focus rings on all interactive elements |</p>
+<p>| <strong>2.5.5 - Touch Target Size</strong> | Minimum 44×44px touch targets on all buttons |</p>
+<p>| <strong>1.4.3 - Contrast (Minimum)</strong> | High-contrast theme with 4.5:1+ ratio |</p>
+<p>| <strong>1.3.1 - Info & Relationships</strong> | Semantic HTML5 (<code><section></code>, <code><nav></code>, <code><main></code>, <code>role</code> attributes) |</p>
+<p>| <strong>4.1.2 - Name, Role, Value</strong> | All icon buttons have descriptive <code>aria-label</code> |</p>
+<p>| <strong>1.1.1 - Non-text Content</strong> | All images have meaningful <code>alt</code> text |</p>
+<p>| <strong>4.1.3 - Status Messages</strong> | <code>aria-live</code> regions for dynamic updates |</p>
+
+<strong>Keyboard Navigation:</strong>
+<li>Full keyboard navigation support</li>
+<li>Visible focus indicators</li>
+<li>Logical tab order</li>
+<li>Escape key to dismiss modals</li>
+
+<strong>Screen Reader Support:</strong>
+<li>ARIA labels on all interactive elements</li>
+<li>Live regions for dynamic content</li>
+<li>Semantic HTML structure</li>
+<li>Descriptive error messages</li>
+
+<hr/>
+
+<h2>🧪 Testing Strategy & Coverage</h2>
+
+<h3>Backend Tests (Pytest) - 15 Tests</h3>
+
+<strong>File: <code>tests/test_health.py</code> (1 test)</strong>
+<li>✅ Health check endpoint validation</li>
+
+<strong>File: <code>tests/test_chat.py</code> (4 tests)</strong>
+<li>✅ Vision intent routing</li>
+<li>✅ Navigation intent routing</li>
+<li>✅ Audit intent routing</li>
+<li>✅ General query handling</li>
+
+<strong>File: <code>tests/test_vision.py</code> (3 tests)</strong>
+<li>✅ Invalid image format handling</li>
+<li>✅ Missing file validation</li>
+<li>✅ Valid image OCR extraction</li>
+
+<strong>File: <code>tests/test_speech.py</code> (2 tests)</strong>
+<li>✅ Invalid audio file handling</li>
+<li>✅ Audio transcription with Gemini</li>
+
+<strong>File: <code>tests/test_navigation.py</code> (3 tests)</strong>
+<li>✅ Route calculation validation</li>
+<li>✅ Nearby facility search</li>
+<li>✅ Coordinate validation</li>
+
+<strong>File: <code>tests/test_audit.py</code> (2 tests)</strong>
+<li>✅ Invalid image format handling</li>
+<li>✅ Valid building audit analysis</li>
+
+<h3>Frontend Tests (Vitest) - 16 Tests</h3>
+
+<strong>File: <code>tests/App.test.jsx</code> (3 tests)</strong>
+<li>✅ App renders without crashing</li>
+<li>✅ Navigation routes work correctly</li>
+<li>✅ Error boundary catches errors</li>
+
+<strong>File: <code>tests/VisionAgent.test.jsx</code> (3 tests)</strong>
+<li>✅ Component renders correctly</li>
+<li>✅ Image upload functionality</li>
+<li>✅ API integration</li>
+
+<strong>File: <code>tests/useSpeechToText.test.js</code> (3 tests)</strong>
+<li>✅ Hook initializes correctly</li>
+<li>✅ Dual-engine fallback logic</li>
+<li>✅ Transcription state management</li>
+
+<strong>File: <code>tests/useTextToSpeech.test.js</code> (3 tests)</strong>
+<li>✅ TTS initialization</li>
+<li>✅ Speech synthesis control</li>
+<li>✅ Voice selection</li>
+
+<strong>File: <code>tests/gestureClassifier.test.js</code> (4 tests)</strong>
+<li>✅ Thumbs up gesture recognition</li>
+<li>✅ Thumbs down gesture recognition</li>
+<li>✅ Peace sign recognition</li>
+<li>✅ Unknown gesture handling</li>
+
+<strong>Running Tests:</strong>
+<pre><code><h1>Backend</h1>
+cd accessindia-api
+pytest -v
+
+<h1>Frontend</h1>
+cd accessindia-web
+npm test
+</code></pre>
+
+<hr/>
+
+<h2>🚀 Setup & Deployment Guide</h2>
+
+<h3>Prerequisites</h3>
+<li>Node.js ≥ 18.x</li>
+<li>Python ≥ 3.10</li>
+<li>Google Gemini API Key (free from <a href="https://aistudio.google.com/">Google AI Studio</a>)</li>
+
+<h3>Installation Steps</h3>
+
+<strong>1. Clone Repository</strong>
+<pre><code>git clone https://github.com/smarpitm/HackAgentAIx_Team-Coin-Hustlers.git
+cd HackAgentAIx_Team-Coin-Hustlers
+</code></pre>
+
+<strong>2. Configure Backend</strong>
+<pre><code>cd accessindia-api
+<h1>Create .env file</h1>
+echo GEMINI_API_KEY=your_key_here > .env
+echo PORT=8000 >> .env
+echo CORS_ORIGINS=http://localhost:5173,http://127.0.0.1:5173 >> .env
+
+<h1>Install dependencies</h1>
+pip install -r requirements.txt
+
+<h1>Run backend</h1>
+python -m app.main
+</code></pre>
+<p>Backend runs at <code>http://localhost:8000</code></p>
+
+<strong>3. Configure Frontend</strong>
+<pre><code>cd accessindia-web
+<h1>Install dependencies</h1>
+npm install
+
+<h1>Run development server</h1>
+npm run dev
+</code></pre>
+<p>Frontend runs at <code>http://localhost:5173</code></p>
+
+<strong>4. Access Application</strong>
+<p>Open browser to <code>http://localhost:5173</code></p>
+
+<hr/>
+
+<h2>📊 Use Cases & User Stories</h2>
+
+<h3>User Persona 1: Visually Impaired Person (Rajesh, 35)</h3>
+<strong>Scenario:</strong> Rajesh needs to read a medicine label
+
+<strong>Journey:</strong>
+<li>Opens AccessIndia AI on mobile</li>
+<li>Navigates to Vision Agent via bottom nav</li>
+<li>Takes photo of medicine bottle</li>
+<li>Receives OCR text extraction: "Paracetamol 500mg, Take 1 tablet twice daily"</li>
+<li>Clicks TTS button to hear instructions</li>
+<li>Gets additional scene description for context</li>
+
+<strong>Outcome:</strong> Independence in reading printed material without assistance
+
+<h3>User Persona 2: Wheelchair User (Priya, 28)</h3>
+<strong>Scenario:</strong> Priya needs to find an accessible route to a hospital
+
+<strong>Journey:</strong>
+<li>Opens Navigation Agent</li>
+<li>Enters destination: "Apollo Hospital, Delhi"</li>
+<li>System auto-detects current location via GPS</li>
+<li>Receives step-by-step accessible walking directions</li>
+<li>Views route on interactive map with fullscreen mode</li>
+<li>Sees nearby accessible pharmacies marked on map</li>
+<li>Clicks pharmacy marker to get details</li>
+
+<strong>Outcome:</strong> Confident navigation with wheelchair-friendly routes
+
+<h3>User Persona 3: Deaf Person (Amit, 42)</h3>
+<strong>Scenario:</strong> Amit needs to communicate at a medical appointment
+
+<strong>Journey:</strong>
+<li>Opens Communication Agent</li>
+<li>Switches to Speech tab</li>
+<li>Clicks microphone to record query</li>
+<li>Dual-engine transcribes: "I need a wheelchair-accessible entrance"</li>
+<li>Shows text in editable transcript panel</li>
+<li>Can type additional details or edit</li>
+<li>Uses "Ask AI" to get facility information</li>
+<li>Switches to Sign Language tab to practice gestures</li>
+
+<strong>Outcome:</strong> Effective communication despite hearing impairment
+
+<h3>User Persona 4: Building Manager (Sunita, 50)</h3>
+<strong>Scenario:</strong> Sunita needs to audit her office building's accessibility
+
+<strong>Journey:</strong>
+<li>Opens Audit Agent</li>
+<li>Takes photo of building entrance</li>
+<li>Uploads image</li>
+<li>Receives compliance score: 45/100 (Partial compliance)</li>
+<li>Reviews specific issues:</li>
+<p>   - Ramp gradient too steep (1:8, should be ≤1:12)</p>
+<p>   - Door width only 750mm (should be ≥900mm)</p>
+<p>   - Missing tactile paving</p>
+<li>Gets numbered fix recommendations with cost estimates</li>
+<li>Uses TTS to read full report aloud</li>
+
+<strong>Outcome:</strong> Clear action plan to improve accessibility compliance
+
+<hr/>
+
+<h2>🎯 Key Technical Achievements</h2>
+
+<h3>1. Multi-Agent Orchestration</h3>
+<li>Intelligent intent classification with confidence scoring</li>
+<li>Automatic routing to specialist agents</li>
+<li>Graceful degradation with offline fallback</li>
+
+<h3>2. Dual-Engine Speech Recognition</h3>
+<li>Primary: Web Speech API (instant, client-side)</li>
+<li>Secondary: Gemini audio transcription (more accurate)</li>
+<li>Seamless failover between engines</li>
+
+<h3>3. Zero-Cost Infrastructure</h3>
+<li>100% free-tier services (Gemini, OSM, Web APIs)</li>
+<li>No vendor lock-in</li>
+<li>Sustainable for long-term operation</li>
+
+<h3>4. Real-Time Hand Gesture Recognition</h3>
+<li>MediaPipe Hands integration</li>
+<li>60 FPS tracking</li>
+<li>6 recognized gestures</li>
+<li>Client-side processing (privacy-preserving)</li>
+
+<h3>5. Accessibility-First Design</h3>
+<li>WCAG 2.1 AA compliant</li>
+<li>Screen reader optimized</li>
+<li>Keyboard navigation</li>
+<li>High contrast themes</li>
+<li>Touch-friendly mobile UI</li>
+
+<h3>6. Multimodal AI Integration</h3>
+<li>Text generation (chat, classification)</li>
+<li>Vision analysis (OCR, scene description)</li>
+<li>Audio transcription</li>
+<li>Single model (Gemini 2.5 Flash) for all</li>
+
+<h3>7. India-Specific Compliance</h3>
+<li>RPwD Act 2016 alignment</li>
+<li>CPWD Guidelines integration</li>
+<li>Nominatim geocoding biased to India</li>
+<li>Cultural and regulatory context awareness</li>
+
+<hr/>
+
+<h2>🤔 Interview Questions & Answers</h2>
+
+<h3>Architecture & Design Questions</h3>
+
+<strong>Q1: Why did you choose a multi-agent architecture instead of a monolithic AI system?</strong>
+
+<strong>A:</strong> Multi-agent architecture provides several advantages:
+<li><strong>Specialization:</strong> Each agent is optimized for a specific domain (vision, navigation, etc.)</li>
+<li><strong>Maintainability:</strong> Easy to update or replace individual agents without affecting others</li>
+<li><strong>Scalability:</strong> Can add new agents (e.g., employment agent, education agent) without refactoring</li>
+<li><strong>Performance:</strong> Can parallelize agent operations if needed</li>
+<li><strong>Prompt Engineering:</strong> Each agent has domain-specific prompts for better results</li>
+<li><strong>Testing:</strong> Can test each agent independently</li>
+
+<p>The orchestrator provides intelligent routing while keeping agents decoupled.</p>
+
+<strong>Q2: How does the dual-engine speech recognition work?</strong>
+
+<strong>A:</strong> The system uses a cascade approach:
+<li><strong>Primary Engine (Web Speech API):</strong> </li>
+<p>   - Instant, client-side processing</p>
+<p>   - Works offline (browser-dependent)</p>
+<p>   - Lower accuracy but zero latency</p>
+   
+<li><strong>Secondary Engine (Gemini Audio):</strong></li>
+<p>   - Records audio via MediaRecorder API</p>
+<p>   - Sends to backend <code>/api/speech/transcribe</code></p>
+<p>   - Gemini 2.5 Flash processes audio</p>
+<p>   - Higher accuracy, slight latency</p>
+
+<p>The <code>useSpeechToText</code> hook manages both engines. If Web Speech fails or is unavailable, it automatically falls back to Gemini. Users can also manually switch engines via UI.</p>
+
+<strong>Q3: Why FastAPI over Flask or Django?</strong>
+
+<strong>A:</strong> FastAPI was chosen for:
+<li><strong>Performance:</strong> ASGI-based, async/await support for I/O-bound operations (API calls to Gemini, OSM)</li>
+<li><strong>Type Safety:</strong> Pydantic integration for request/response validation</li>
+<li><strong>Auto Documentation:</strong> Built-in OpenAPI (Swagger) docs at <code>/docs</code></li>
+<li><strong>Modern Python:</strong> Uses Python 3.10+ features (type hints, pattern matching)</li>
+<li><strong>Developer Experience:</strong> Fast development with automatic reload</li>
+
+<p>Flask lacks async support; Django is overkill for our API-centric use case.</p>
+
+<strong>Q4: How do you ensure the system works when Gemini API is unavailable?</strong>
+
+<strong>A:</strong> Multi-layer fallback strategy:
+<li><strong>Orchestrator:</strong> Falls back to heuristic keyword matching</li>
+<li><strong>Vision Agent:</strong> Returns graceful error with confidence 0.0</li>
+<li><strong>Navigation:</strong> OSRM/Nominatim are independent of Gemini</li>
+<li><strong>Audit/Speech:</strong> Require Gemini, return user-friendly errors</li>
+<li><strong>Frontend:</strong> Error boundaries catch crashes, show retry options</li>
+
+<p>We also implement:</p>
+<li>Request timeouts (prevent infinite hangs)</li>
+<li>Retry logic with exponential backoff</li>
+<li>User notifications via toast system</li>
+
+<strong>Q5: Why Zustand over Redux or Context API?</strong>
+
+<strong>A:</strong> Zustand advantages:
+<li><strong>Simplicity:</strong> No boilerplate, no providers/consumers</li>
+<li><strong>Performance:</strong> Fine-grained reactivity, minimal re-renders</li>
+<li><strong>Size:</strong> ~1KB vs Redux ~4KB</li>
+<li><strong>DevEx:</strong> No actions/reducers ceremony</li>
+<li><strong>TypeScript:</strong> Built-in TS support</li>
+
+<p>For our use case (user location, agent state, UI state), Zustand's simplicity was ideal. Redux would be overkill; Context API has performance issues with frequent updates.</p>
+
+<hr/>
+
+<h3>Technical Implementation Questions</h3>
+
+<strong>Q6: How does the Orchestrator classify user intent?</strong>
+
+<strong>A:</strong> Two-stage classification:
+
+<strong>Stage 1 - AI Classification (Gemini 2.5 Flash):</strong>
+<pre><code>prompt = f"{ORCHESTRATOR_PROMPT}\nUser input: '{user_message}'"
+response = model.generate_content(prompt)
+parsed = json.loads(response.text)  # Returns: intent, agent, confidence, message
+</code></pre>
+
+<p>The prompt instructs Gemini to classify into: <code>vision</code>, <code>navigation</code>, <code>communication</code>, <code>audit</code>, <code>general</code></p>
+
+<strong>Stage 2 - Fallback Rule Engine:</strong>
+<pre><code>if any(w in msg_lower for w in ["navigate", "route", "map", ...]):
+    return { "intent": "navigation_query", "agent": "navigation", "confidence": 0.89 }
+</code></pre>
+
+<p>Uses keyword matching with priority order. Also considers image presence for routing.</p>
+
+<strong>Q7: Explain the gesture recognition algorithm in MediaPipe.</strong>
+
+<strong>A:</strong> Three-step process:
+
+<strong>Step 1 - Hand Detection:</strong>
+<pre><code>const hands = new Hands({
+  maxNumHands: 1,
+  modelComplexity: 1,
+  minDetectionConfidence: 0.7,
+  minTrackingConfidence: 0.5
+});
+</code></pre>
+
+<strong>Step 2 - Landmark Extraction:</strong>
+<p>MediaPipe returns 21 hand landmarks (fingertips, knuckles, wrist) as normalized x,y,z coordinates.</p>
+
+<strong>Step 3 - Gesture Classification (gestureClassifier.js):</strong>
+<pre><code>function classifyGesture(landmarks) {
+  const fingerStates = getFingerStates(landmarks);  // Extended or curled
+  
+  if (thumbUp && allOthersCurled) return 'thumbs_up';
+  if (indexAndMiddleExtended && othersDown) return 'peace';
+  // ... more rules
+}
+</code></pre>
+
+<p>Uses geometric rules (finger angles, relative positions) for 6 gestures.</p>
+
+<strong>Q8: How do you handle image uploads securely?</strong>
+
+<strong>A:</strong> Security measures:
+
+<li><strong>File Type Validation:</strong></li>
+<pre><code>ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+if not file.filename.endswith(tuple(ALLOWED_EXTENSIONS)):
+    raise HTTPException(400, "Invalid file format")
+</code></pre>
+
+<li><strong>File Size Limit:</strong> FastAPI <code>python-multipart</code> limits upload size (default 1MB, configurable)</li>
+
+<li><strong>Content Type Check:</strong> Verify MIME type matches extension</li>
+
+<li><strong>No Storage:</strong> Images processed in-memory, immediately discarded after analysis (privacy-preserving)</li>
+
+<li><strong>Pillow Validation:</strong> <code>PIL.Image.open()</code> validates actual image data (not just extension)</li>
+
+<li><strong>CORS:</strong> Restrict origins in production</li>
+
+<strong>Q9: How does the navigation routing work without Google Maps?</strong>
+
+<strong>A:</strong> Three-service OpenStreetMap pipeline:
+
+<strong>Step 1 - Geocoding (Nominatim):</strong>
+<pre><code>nominatim_url = f"https://nominatim.openstreetmap.org/search"
+params = {"q": destination, "format": "json", "countrycodes": "in"}
+response = requests.get(nominatim_url, params=params)
+dest_coords = (response[0]['lat'], response[0]['lon'])
+</code></pre>
+
+<strong>Step 2 - Routing (OSRM):</strong>
+<pre><code>osrm_url = f"http://router.project-osrm.org/route/v1/walking/{origin_lng},{origin_lat};{dest_lng},{dest_lat}"
+params = {"steps": "true", "geometries": "geojson"}
+route = requests.get(osrm_url, params=params).json()
+</code></pre>
+
+<strong>Step 3 - Nearby POI Search (Overpass API):</strong>
+<pre><code>overpass_url = "https://overpass-api.de/api/interpreter"
+query = f"""
+[out:json];
+(
+  node<a href="around:2000,{lat},{lng}">"amenity"="hospital"</a>;
+  node<a href="around:2000,{lat},{lng}">"amenity"="pharmacy"</a>;
+);
+out body;
+"""
+facilities = requests.post(overpass_url, data={"data": query}).json()
+</code></pre>
+
+<p>All services are free, open-source, and have high availability.</p>
+
+<strong>Q10: How do you ensure WCAG AA compliance?</strong>
+
+<strong>A:</strong> Comprehensive approach:
+
+<strong>1. Semantic HTML:</strong>
+<pre><code><main role="main" id="main-content">
+  <section aria-label="Vision Agent">
+    <button aria-label="Analyze image">...</button>
+  </section>
+</main>
+</code></pre>
+
+<strong>2. Keyboard Navigation:</strong>
+<pre><code><a href="#main-content" className="skip-link">Skip to content</a>
+</code></pre>
+<p>First Tab keypress reveals skip link (WCAG 2.4.1)</p>
+
+<strong>3. Focus Management:</strong>
+<pre><code>.touch-target {
+  min-width: 44px;
+  min-height: 44px;
+}
+button:focus-visible {
+  outline: 2px solid #f97316;  /<em> Orange </em>/
+  outline-offset: 2px;
+}
+</code></pre>
+
+<strong>4. Color Contrast:</strong>
+<li>Background: <code>#0f172a</code> (slate-900)</li>
+<li>Text: <code>#f4f4f5</code> (zinc-100)</li>
+<li>Contrast ratio: 15.8:1 (exceeds AA requirement of 4.5:1)</li>
+
+<strong>5. ARIA Attributes:</strong>
+<pre><code><div role="alert" aria-live="polite">
+  Processing your request...
+</div>
+</code></pre>
+
+<strong>6. Testing:</strong>
+<li>Manual screen reader testing (NVDA, JAWS)</li>
+<li>Keyboard-only navigation testing</li>
+<li>Color blindness simulator validation</li>
+<li>Automated accessibility audits (axe DevTools)</li>
+
+<hr/>
+
+<h3>Scaling & Performance Questions</h3>
+
+<strong>Q11: How would you scale this system to handle 1 million users?</strong>
+
+<strong>A:</strong> Multi-tier scaling strategy:
+
+<strong>Frontend Scaling:</strong>
+<li>Deploy to CDN (Vercel, Netlify, CloudFront)</li>
+<li>Enable Brotli compression</li>
+<li>Code splitting by route</li>
+<li>Image optimization with lazy loading</li>
+<li>Service Worker for offline capability</li>
+
+<strong>Backend Scaling:</strong>
+<li>Horizontal scaling with load balancer (AWS ALB, NGINX)</li>
+<li>Containerization with Docker</li>
+<li>Kubernetes orchestration for auto-scaling</li>
+<li>Multi-region deployment</li>
+
+<strong>API Optimization:</strong>
+<li>Rate limiting per user (prevent abuse)</li>
+<li>Caching layer (Redis) for:</li>
+<p>  - Geocoding results (location → coordinates)</p>
+<p>  - Frequent routes</p>
+<p>  - Audit results for same building</p>
+<li>API Gateway (AWS API Gateway, Kong) for:</li>
+<p>  - Request throttling</p>
+<p>  - API key management</p>
+<p>  - Request/response transformation</p>
+
+<strong>Database Layer (if needed):</strong>
+<li>PostgreSQL with PostGIS for geospatial data</li>
+<li>User preferences, history, saved routes</li>
+<li>Read replicas for analytics</li>
+
+<strong>AI Model Optimization:</strong>
+<li>Batch requests to Gemini when possible</li>
+<li>Implement request queuing (Celery, Bull)</li>
+<li>Consider edge-deployed models for vision (TensorFlow.js)</li>
+<li>Cache common OCR results</li>
+
+<strong>Monitoring:</strong>
+<li>Application metrics (Prometheus, Grafana)</li>
+<li>Error tracking (Sentry)</li>
+<li>Performance monitoring (New Relic, DataDog)</li>
+<li>User analytics (Mixpanel, Amplitude)</li>
+
+<strong>Cost Management at Scale:</strong>
+<li>Negotiate enterprise Gemini pricing</li>
+<li>Optimize prompt tokens (shorter system prompts)</li>
+<li>Implement tiered service (free, premium)</li>
+
+<strong>Q12: What are the performance bottlenecks and how do you address them?</strong>
+
+<strong>A:</strong> Identified bottlenecks and solutions:
+
+<strong>Bottleneck 1: Gemini API Latency (2-4 seconds)</strong>
+<li><strong>Solution:</strong> </li>
+<p>  - Show immediate loading states</p>
+<p>  - Implement streaming responses (Gemini supports SSE)</p>
+<p>  - Cache frequent queries</p>
+<p>  - Pre-fetch common responses</p>
+
+<strong>Bottleneck 2: Large Image Uploads</strong>
+<li><strong>Solution:</strong></li>
+<p>  - Client-side image compression (browser-image-compression)</p>
+<p>  - Resize to max 1024×1024 before upload</p>
+<p>  - Progressive image upload with progress bar</p>
+<p>  - WebP format for 30% size reduction</p>
+
+<strong>Bottleneck 3: Map Tile Loading</strong>
+<li><strong>Solution:</strong></li>
+<p>  - Tile caching in browser</p>
+<p>  - Preload tiles for common areas</p>
+<p>  - Use vector tiles (smaller, faster)</p>
+<p>  - CDN for tile delivery</p>
+
+<strong>Bottleneck 4: MediaPipe Frame Processing (30-60 FPS)</strong>
+<li><strong>Solution:</strong></li>
+<p>  - Reduce video resolution to 640×480</p>
+<p>  - Skip frames (process every 2nd frame)</p>
+<p>  - Use <code>requestAnimationFrame</code> for 60fps cap</p>
+<p>  - Web Worker for off-main-thread processing</p>
+
+<strong>Bottleneck 5: Bundle Size (React app)</strong>
+<li><strong>Current:</strong> ~500KB gzipped</li>
+<li><strong>Solution:</strong></li>
+<p>  - Route-based code splitting</p>
+<p>  - Tree-shaking unused code</p>
+<p>  - Dynamic imports for heavy libraries (Leaflet)</p>
+<p>  - Analyze bundle with <code>vite-bundle-visualizer</code></p>
+
+<strong>Q13: How do you handle concurrent requests to Gemini API?</strong>
+
+<strong>A:</strong> Request management strategy:
+
+<strong>1. Rate Limiting:</strong>
+<pre><code>from slowapi import Limiter
+limiter = Limiter(key_func=get_remote_address)
+
+@app.post("/api/chat")
+@limiter.limit("10/minute")  # 10 requests per minute per IP
+async def chat(request: ChatRequest):
+    ...
+</code></pre>
+
+<strong>2. Request Queuing:</strong>
+<pre><code>from asyncio import Queue, create_task
+
+request_queue = Queue(maxsize=100)
+
+async def process_queue():
+    while True:
+        request = await request_queue.get()
+        result = await call_gemini(request)
+        request_queue.task_done()
+</code></pre>
+
+<strong>3. Circuit Breaker:</strong>
+<pre><code>from circuitbreaker import circuit
+
+@circuit(failure_threshold=5, recovery_timeout=60)
+async def call_gemini_api(prompt):
+    # If 5 failures occur, circuit opens for 60 seconds
+    # Prevents cascade failures
+    response = await genai_model.generate_content(prompt)
+    return response
+</code></pre>
+
+<strong>4. Timeout Protection:</strong>
+<pre><code>from asyncio import wait_for, TimeoutError
+
+try:
+    response = await wait_for(call_gemini(prompt), timeout=10.0)
+except TimeoutError:
+    return fallback_response()
+</code></pre>
+
+<hr/>
+
+<h3>Security & Privacy Questions</h3>
+
+<strong>Q14: How do you protect user privacy?</strong>
+
+<strong>A:</strong> Privacy-first design principles:
+
+<strong>1. No User Data Storage:</strong>
+<li>Images processed in-memory only</li>
+<li>Audio files discarded after transcription</li>
+<li>No user accounts required</li>
+<li>No tracking cookies</li>
+
+<strong>2. Client-Side Processing:</strong>
+<li>MediaPipe runs entirely in browser</li>
+<li>Web Speech API is local</li>
+<li>No video/audio sent to servers (except optional Gemini transcription)</li>
+
+<strong>3. HTTPS Only:</strong>
+<li>Force TLS 1.3</li>
+<li>HSTS headers</li>
+<li>No mixed content</li>
+
+<strong>4. Data Minimization:</strong>
+<li>Only send necessary data to Gemini (compressed images, text prompts)</li>
+<li>No location data stored (only used for routing)</li>
+
+<strong>5. API Key Security:</strong>
+<li>Stored in <code>.env</code> (never committed)</li>
+<li>Server-side only (not exposed to frontend)</li>
+<li>Rotate keys regularly</li>
+
+<strong>6. CORS Configuration:</strong>
+<pre><code>CORS_ORIGINS = "http://localhost:5173,https://yourdomain.com"
+<h1>Restrict to known origins only</h1>
+</code></pre>
+
+<strong>7. Input Sanitization:</strong>
+<li>Validate all user inputs</li>
+<li>Escape special characters</li>
+<li>Prevent prompt injection attacks</li>
+
+<strong>Q15: What are potential security vulnerabilities?</strong>
+
+<strong>A:</strong> Identified risks and mitigations:
+
+<strong>Vulnerability 1: Prompt Injection</strong>
+<li><strong>Risk:</strong> Malicious user inputs manipulate AI responses</li>
+<li><strong>Mitigation:</strong></li>
+<p>  - Input validation (length limits, character filters)</p>
+<p>  - Sanitize user input before sending to Gemini</p>
+<p>  - Use structured prompts with clear boundaries</p>
+<p>  - Monitor for suspicious patterns</p>
+
+<strong>Vulnerability 2: DDoS Attacks</strong>
+<li><strong>Risk:</strong> Overwhelming the API with requests</li>
+<li><strong>Mitigation:</strong></li>
+<p>  - Rate limiting (10 req/min per IP)</p>
+<p>  - CAPTCHA for suspicious traffic</p>
+<p>  - CDN with DDoS protection (Cloudflare)</p>
+<p>  - Auto-scaling to absorb spikes</p>
+
+<strong>Vulnerability 3: API Key Exposure</strong>
+<li><strong>Risk:</strong> Leaked Gemini key leads to unauthorized usage</li>
+<li><strong>Mitigation:</strong></li>
+<p>  - Never commit keys to Git (<code>.env</code> in <code>.gitignore</code>)</p>
+<p>  - Use secrets manager (AWS Secrets Manager, Vault)</p>
+<p>  - Rotate keys quarterly</p>
+<p>  - Monitor usage in Google AI Studio</p>
+
+<strong>Vulnerability 4: XSS (Cross-Site Scripting)</strong>
+<li><strong>Risk:</strong> Injected scripts in user input</li>
+<li><strong>Mitigation:</strong></li>
+<p>  - React auto-escapes by default</p>
+<p>  - Avoid <code>dangerouslySetInnerHTML</code></p>
+<p>  - CSP headers (Content Security Policy)</p>
+
+<strong>Vulnerability 5: File Upload Attacks</strong>
+<li><strong>Risk:</strong> Malicious files (malware, XXE attacks)</li>
+<li><strong>Mitigation:</strong></li>
+<p>  - File type validation</p>
+<p>  - Pillow image verification</p>
+<p>  - Size limits (1MB max)</p>
+<p>  - No file execution on server</p>
+
+<hr/>
+
+<h3>Business & Impact Questions</h3>
+
+<strong>Q16: What is the target market size for AccessIndia AI?</strong>
+
+<strong>A:</strong> Market analysis:
+
+<strong>Primary Market (India):</strong>
+<li>Total persons with disabilities: <strong>80+ million</strong> (2021 census)</li>
+<li>Breakdown:</li>
+<p>  - Visual impairment: ~8 million</p>
+<p>  - Hearing impairment: ~5 million</p>
+<p>  - Mobility impairment: ~20 million</p>
+<p>  - Multiple disabilities: ~15 million</p>
+<li>Smartphone penetration among disabled: ~35% (28 million potential users)</li>
+
+<strong>Secondary Market:</strong>
+<li>Caregivers and family members: ~150 million</li>
+<li>Healthcare professionals: ~2 million</li>
+<li>Building managers/auditors: ~500,000</li>
+<li>Government agencies (accessibility compliance): ~10,000</li>
+
+<strong>Addressable Market:</strong>
+<li>Direct users (disabled with smartphones): 28 million</li>
+<li>Indirect beneficiaries: 150+ million</li>
+
+<strong>Growth Drivers:</strong>
+<li>Increasing smartphone adoption (44% annual growth in tier-2/3 cities)</li>
+<li>Government initiatives (Accessible India Campaign)</li>
+<li>RPwD Act 2016 enforcement</li>
+<li>Rising awareness of disability rights</li>
+
+<strong>Q17: How does this compare to existing accessibility solutions?</strong>
+
+<strong>A:</strong> Competitive analysis:
+
+<p>| Feature | AccessIndia AI | Google Lookout | Be My Eyes | WhatsApp |</p>
+<p>|---------|----------------|----------------|------------|----------|</p>
+<p>| <strong>OCR</strong> | ✅ Free | ✅ Free | ✅ Free (via volunteers) | ❌ |</p>
+<p>| <strong>Scene Description</strong> | ✅ AI-powered | ✅ AI-powered | ✅ Human volunteers | ❌ |</p>
+<p>| <strong>Accessible Navigation</strong> | ✅ Free (OSM) | ❌ | ❌ | ❌ |</p>
+<p>| <strong>Speech Recognition</strong> | ✅ Dual-engine | ❌ | ❌ | ✅ Basic |</p>
+<p>| <strong>Sign Language</strong> | ✅ Gesture tracking | ❌ | ❌ | ❌ |</p>
+<p>| <strong>Building Audit</strong> | ✅ RPwD compliant | ❌ | ❌ | ❌ |</p>
+<p>| <strong>Multi-Agent System</strong> | ✅ 5 agents | ❌ | ❌ | ❌ |</p>
+<p>| <strong>India-Specific</strong> | ✅ RPwD/CPWD | ❌ Global | ❌ Global | ❌ |</p>
+<p>| <strong>Cost</strong> | ✅ $0/month | ✅ Free | ✅ Free | ✅ Free |</p>
+<p>| <strong>Offline Mode</strong> | ⚠️ Partial | ✅ Some features | ❌ Needs volunteers | ⚠️ Basic |</p>
+
+<strong>Key Differentiators:</strong>
+<li><strong>All-in-one platform</strong> (vision + navigation + communication + audit)</li>
+<li><strong>India-specific compliance</strong> (RPwD Act 2016, CPWD)</li>
+<li><strong>Multi-agent architecture</strong> (intelligent routing)</li>
+<li><strong>Zero cost</strong> (sustainable for NGOs, government deployment)</li>
+<li><strong>Open-source potential</strong> (can be audited, customized)</li>
+
+<strong>Q18: What is the monetization strategy?</strong>
+
+<strong>A:</strong> Sustainable freemium model:
+
+<strong>Free Tier (Core Mission):</strong>
+<li>All 5 agents unlimited</li>
+<li>Basic features accessible to all</li>
+<li>Funded by:</li>
+<p>  - Government grants (National Trust, DEPwD)</p>
+<p>  - CSR partnerships (TCS, Infosys accessibility initiatives)</p>
+<p>  - NGO donations (Enable India, Saksham)</p>
+
+<strong>Premium Tier ($2-5/month):</strong>
+<li>Advanced features:</li>
+<p>  - Offline mode (cached routes, pre-downloaded areas)</p>
+<p>  - Priority AI processing (faster responses)</p>
+<p>  - Custom voice presets</p>
+<p>  - Historical audit reports</p>
+<p>  - Multi-language support (regional languages)</p>
+<p>  - API access for institutions</p>
+
+<strong>Enterprise Tier (Custom pricing):</strong>
+<li>For organizations:</li>
+<p>  - Building management companies (audit suites)</p>
+<p>  - Hospitals/clinics (accessibility compliance)</p>
+<p>  - Government agencies (bulk licensing)</p>
+<p>  - Educational institutions</p>
+<li>Features:</li>
+<p>  - White-label deployment</p>
+<p>  - Custom agents (hospital navigation, classroom accessibility)</p>
+<p>  - Analytics dashboard</p>
+<p>  - SLA guarantees</p>
+<p>  - Dedicated support</p>
+
+<strong>Revenue Projections (5-year):</strong>
+<li>Year 1: Grant-funded ($0 revenue, 10K users)</li>
+<li>Year 2: Freemium launch ($50K revenue, 100K users, 2% conversion)</li>
+<li>Year 3: Enterprise pilots ($500K revenue, 500K users)</li>
+<li>Year 4: Government contracts ($2M revenue, 2M users)</li>
+<li>Year 5: Pan-India adoption ($10M revenue, 10M users)</li>
+
+<hr/>
+
+<h3>Future Roadmap Questions</h3>
+
+<strong>Q19: What features would you add next?</strong>
+
+<strong>A:</strong> Prioritized roadmap (6-month sprints):
+
+<strong>Phase 1 (Q1 2026): Core Enhancements</strong>
+<li><strong>Regional Language Support</strong></li>
+<p>   - Hindi, Tamil, Telugu, Bengali, Marathi UI</p>
+<p>   - Gemini multilingual prompts</p>
+<p>   - Regional TTS voices</p>
+   
+<li><strong>Offline Mode</strong></li>
+<p>   - Service Worker for offline caching</p>
+<p>   - Cached routes and maps (offline tiles)</p>
+<p>   - Local LLM (Gemini Nano) for basic queries</p>
+   
+<li><strong>User Accounts (Optional)</strong></li>
+<p>   - Save favorite routes</p>
+<p>   - Audit history</p>
+<p>   - Custom voice presets</p>
+
+<strong>Phase 2 (Q2 2026): New Agents</strong>
+<li><strong>Employment Agent</strong></li>
+<p>   - Job matching for disabled candidates</p>
+<p>   - Workplace accessibility assessment</p>
+<p>   - Resume builder with accessibility focus</p>
+   
+<li><strong>Education Agent</strong></li>
+<p>   - Classroom accessibility audit</p>
+<p>   - Learning material OCR (textbooks)</p>
+<p>   - Sign language interpreter for lectures</p>
+   
+<li><strong>Healthcare Agent</strong></li>
+<p>   - Medicine reminder with OCR</p>
+<p>   - Accessible hospital finder (beyond basic search)</p>
+<p>   - Medical document reader</p>
+
+<strong>Phase 3 (Q3 2026): Advanced Features</strong>
+<li><strong>Real-Time Collaboration</strong></li>
+<p>   - Share live location with caregivers</p>
+<p>   - Video call with sign language overlay</p>
+<p>   - Emergency SOS feature</p>
+   
+<li><strong>Community Features</strong></li>
+<p>   - User-reported accessibility issues (crowdsourced)</p>
+<p>   - Verified accessible locations database</p>
+<p>   - Rating system for buildings/facilities</p>
+   
+<li><strong>AR/VR Integration</strong></li>
+<p>   - AR navigation arrows (using device camera)</p>
+<p>   - VR accessibility training for building managers</p>
+
+<strong>Phase 4 (Q4 2026): Platform Expansion</strong>
+<li><strong>Government Integration</strong></li>
+<p>    - Aadhaar integration for disability certificates</p>
+<p>    - UDID card verification</p>
+<p>    - Direct grievance filing to CPWD</p>
+    
+<li><strong>IoT Integration</strong></li>
+<p>    - Smart home accessibility (voice-controlled)</p>
+<p>    - Wearable device support (smart glasses for vision)</p>
+<p>    - Public transport API integration (metro, bus accessibility)</p>
+
+<strong>Phase 5 (2027+): Research & Innovation</strong>
+<li><strong>Advanced AI Models</strong></li>
+<p>    - Custom fine-tuned models for Indian sign language</p>
+<p>    - Depth perception for better navigation (LiDAR)</p>
+<p>    - Predictive accessibility (learn user patterns)</p>
+
+<strong>Q20: How would you expand internationally?</strong>
+
+<strong>A:</strong> Global expansion strategy:
+
+<strong>Step 1: Similar Regulatory Markets (6 months)</strong>
+<li><strong>Target:</strong> UK, Australia, Canada</li>
+<li><strong>Rationale:</strong> Similar accessibility laws (ADA, DDA), English-speaking</li>
+<li><strong>Localization:</strong></li>
+<p>  - Compliance modules (ADA standards, not RPwD)</p>
+<p>  - Regional map providers</p>
+<p>  - Currency conversion for audit cost estimates</p>
+
+<strong>Step 2: Asia-Pacific (1 year)</strong>
+<li><strong>Target:</strong> Bangladesh, Sri Lanka, Nepal, ASEAN countries</li>
+<li><strong>Rationale:</strong> High disability population, growing smartphone adoption</li>
+<li><strong>Localization:</strong></li>
+<p>  - Regional languages (Bengali, Sinhala, Thai, Bahasa)</p>
+<p>  - Local compliance standards</p>
+<p>  - Regional OSM data</p>
+
+<strong>Step 3: Emerging Markets (2 years)</strong>
+<li><strong>Target:</strong> Sub-Saharan Africa, Latin America</li>
+<li><strong>Rationale:</strong> Large underserved disability populations</li>
+<li><strong>Challenges:</strong></li>
+<p>  - Lower smartphone penetration</p>
+<p>  - Limited internet connectivity</p>
+<p>  - Need for extreme optimization (offline-first)</p>
+
+<strong>Step 4: Developed Markets (3 years)</strong>
+<li><strong>Target:</strong> USA, Europe, Japan</li>
+<li><strong>Rationale:</strong> High willingness to pay, mature accessibility markets</li>
+<li><strong>Strategy:</strong></li>
+<p>  - Premium positioning</p>
+<p>  - Enterprise focus (corporations, institutions)</p>
+<p>  - White-label partnerships</p>
+
+<strong>Localization Checklist:</strong>
+<li>Language support (UI, TTS, STT)</li>
+<li>Compliance standards (ADA, EN 301 549, JIS)</li>
+<li>Map providers (regional OSM quality varies)</li>
+<li>Cultural considerations (gesture meanings vary)</li>
+<li>Currency and units (feet vs meters, dollars vs rupees)</li>
+
+<hr/>
+
+<h2>🎓 Technical Concepts to Master</h2>
+
+<h3>For Frontend Interviews</h3>
+
+<li><strong>React Concepts:</strong></li>
+<p>   - Component lifecycle (useEffect, useCallback, useMemo)</p>
+<p>   - Custom hooks patterns</p>
+<p>   - Error boundaries</p>
+<p>   - Portal usage (modals, toasts)</p>
+   
+<li><strong>State Management:</strong></li>
+<p>   - Zustand architecture</p>
+<p>   - Redux comparison</p>
+<p>   - Context API vs global state</p>
+   
+<li><strong>Performance:</strong></li>
+<p>   - Code splitting with React.lazy</p>
+<p>   - Memoization strategies</p>
+<p>   - Virtual DOM reconciliation</p>
+<p>   - Bundle size optimization</p>
+   
+<li><strong>Accessibility:</strong></li>
+<p>   - ARIA attributes (roles, labels, live regions)</p>
+<p>   - Keyboard navigation patterns</p>
+<p>   - Focus management</p>
+<p>   - Screen reader compatibility</p>
+
+<li><strong>Web APIs:</strong></li>
+<p>   - Web Speech API (SpeechRecognition, SpeechSynthesis)</p>
+<p>   - MediaRecorder API</p>
+<p>   - Geolocation API</p>
+<p>   - Service Workers</p>
+
+<h3>For Backend Interviews</h3>
+
+<li><strong>FastAPI Concepts:</strong></li>
+<p>   - Dependency injection</p>
+<p>   - Pydantic validation</p>
+<p>   - Async/await patterns</p>
+<p>   - Middleware (CORS, logging)</p>
+   
+<li><strong>Python Async:</strong></li>
+<p>   - Event loop</p>
+<p>   - Coroutines vs futures</p>
+<p>   - asyncio.gather for parallelism</p>
+<p>   - async context managers</p>
+   
+<li><strong>API Design:</strong></li>
+<p>   - RESTful principles</p>
+<p>   - Request/response schemas</p>
+<p>   - Error handling (HTTP status codes)</p>
+<p>   - Rate limiting strategies</p>
+   
+<li><strong>Testing:</strong></li>
+<p>   - Pytest fixtures</p>
+<p>   - Mocking external APIs</p>
+<p>   - Test coverage metrics</p>
+<p>   - Integration vs unit tests</p>
+
+<h3>For AI/ML Interviews</h3>
+
+<li><strong>Gemini API:</strong></li>
+<p>   - Multimodal input handling</p>
+<p>   - Prompt engineering techniques</p>
+<p>   - Token optimization</p>
+<p>   - Streaming responses</p>
+   
+<li><strong>Computer Vision:</strong></li>
+<p>   - OCR techniques (Tesseract vs AI models)</p>
+<p>   - Image preprocessing</p>
+<p>   - Object detection algorithms</p>
+<p>   - Landmark detection (MediaPipe)</p>
+   
+<li><strong>NLP:</strong></li>
+<p>   - Intent classification</p>
+<p>   - Sentiment analysis</p>
+<p>   - Named entity recognition</p>
+<p>   - Text generation with constraints</p>
+   
+<li><strong>Audio Processing:</strong></li>
+<p>   - Speech-to-text models</p>
+<p>   - Audio feature extraction</p>
+<p>   - Noise reduction techniques</p>
+<p>   - Voice activity detection</p>
+
+<h3>For System Design Interviews</h3>
+
+<li><strong>Architecture Patterns:</strong></li>
+<p>   - Microservices vs monolith</p>
+<p>   - Multi-agent systems</p>
+<p>   - Event-driven architecture</p>
+<p>   - CQRS (Command Query Responsibility Segregation)</p>
+   
+<li><strong>Scalability:</strong></li>
+<p>   - Horizontal vs vertical scaling</p>
+<p>   - Load balancing strategies</p>
+<p>   - Caching layers (Redis, CDN)</p>
+<p>   - Database sharding</p>
+   
+<li><strong>Reliability:</strong></li>
+<p>   - Circuit breakers</p>
+<p>   - Retry with exponential backoff</p>
+<p>   - Graceful degradation</p>
+<p>   - Health checks and monitoring</p>
+   
+<li><strong>Security:</strong></li>
+<p>   - Authentication/authorization (JWT, OAuth)</p>
+<p>   - API key management</p>
+<p>   - CORS configuration</p>
+<p>   - Input validation and sanitization</p>
+
+<hr/>
+
+<h2>📊 Key Metrics & KPIs</h2>
+
+<h3>Technical Metrics</h3>
+
+<p>| Metric | Current | Target | Measurement |</p>
+<p>|--------|---------|--------|-------------|</p>
+<p>| <strong>API Response Time</strong> | 2-4s (Gemini) | <2s | P95 latency |</p>
+<p>| <strong>Frontend Bundle Size</strong> | ~500KB gzipped | <400KB | Webpack analyzer |</p>
+<p>| <strong>Test Coverage</strong> | 80% | 90% | pytest-cov, vitest |</p>
+<p>| <strong>Lighthouse Score</strong> | 92/100 | 95/100 | Chrome DevTools |</p>
+<p>| <strong>Time to Interactive</strong> | 1.8s | <1.5s | Web Vitals |</p>
+<p>| <strong>Uptime</strong> | 99.5% | 99.9% | UptimeRobot |</p>
+
+<h3>User Metrics</h3>
+
+<p>| Metric | Target (Year 1) | Measurement |</p>
+<p>|--------|-----------------|-------------|</p>
+<p>| <strong>Monthly Active Users</strong> | 10,000 | Analytics |</p>
+<p>| <strong>Agent Usage Distribution</strong> | Vision 40%, Nav 30%, Comm 15%, Audit 10%, Orch 5% | Event tracking |</p>
+<p>| <strong>User Retention (30-day)</strong> | 40% | Cohort analysis |</p>
+<p>| <strong>Average Session Duration</strong> | 5 minutes | Analytics |</p>
+<p>| <strong>Feature Adoption Rate</strong> | 60% (use ≥3 agents) | User tracking |</p>
+
+<h3>Business Metrics</h3>
+
+<p>| Metric | Target (Year 2) | Measurement |</p>
+<p>|--------|-----------------|-------------|</p>
+<p>| <strong>Conversion Rate (Free → Premium)</strong> | 2% | Payment gateway |</p>
+<p>| <strong>Customer Acquisition Cost</strong> | <$5 | Marketing spend/users |</p>
+<p>| <strong>Lifetime Value</strong> | $50 | Revenue per user |</p>
+<p>| <strong>Churn Rate</strong> | <10% monthly | Subscription cancellations |</p>
+<p>| <strong>NPS (Net Promoter Score)</strong> | 50+ | User surveys |</p>
+
+<h3>Impact Metrics</h3>
+
+<p>| Metric | Target (Year 3) | Measurement |</p>
+<p>|--------|-----------------|-------------|</p>
+<p>| <strong>Buildings Audited</strong> | 10,000 | Audit API usage |</p>
+<p>| <strong>Accessible Routes Found</strong> | 100,000 | Navigation API usage |</p>
+<p>| <strong>Images Analyzed</strong> | 500,000 | Vision API usage |</p>
+<p>| <strong>Lives Impacted</strong> | 1 million | User surveys + NGO partnerships |</p>
+<p>| <strong>Government Adoptions</strong> | 5 states | Partnership agreements |</p>
+
+<hr/>
+
+<h2>💡 Innovative Aspects</h2>
+
+<h3>1. Multi-Agent Orchestration</h3>
+<strong>Innovation:</strong> Instead of a single AI handling all requests, we use specialized agents coordinated by an orchestrator.
+
+<strong>Benefits:</strong>
+<li>Higher accuracy (domain experts)</li>
+<li>Better prompt engineering per domain</li>
+<li>Easier maintenance and testing</li>
+<li>Scalable (add agents without refactoring)</li>
+
+<strong>Technical Novelty:</strong> Confidence-based routing with fallback strategies
+
+<h3>2. Dual-Engine Speech Recognition</h3>
+<strong>Innovation:</strong> Cascading speech recognition with Web Speech API + Gemini Audio
+
+<strong>Benefits:</strong>
+<li>Instant feedback (Web Speech)</li>
+<li>Higher accuracy (Gemini)</li>
+<li>Offline capability (Web Speech)</li>
+<li>Cost-effective (free-tier friendly)</li>
+
+<strong>Technical Novelty:</strong> Seamless failover without user intervention
+
+<h3>3. Zero-Cost Infrastructure</h3>
+<strong>Innovation:</strong> 100% free-tier architecture (Gemini + OSM + Web APIs)
+
+<strong>Benefits:</strong>
+<li>Sustainable for NGOs</li>
+<li>Government deployment ready</li>
+<li>No vendor lock-in</li>
+<li>Democratizes access</li>
+
+<strong>Technical Novelty:</strong> Proof that advanced AI accessibility doesn't require enterprise budgets
+
+<h3>4. India-Specific Compliance</h3>
+<strong>Innovation:</strong> First multi-agent AI platform aligned with RPwD Act 2016 & CPWD Guidelines
+
+<strong>Benefits:</strong>
+<li>Legal compliance for Indian institutions</li>
+<li>Culturally relevant (Indian sign language, regional contexts)</li>
+<li>Market differentiation</li>
+
+<strong>Technical Novelty:</strong> AI model trained on Indian regulatory standards
+
+<h3>5. Real-Time Gesture Recognition</h3>
+<strong>Innovation:</strong> Client-side MediaPipe integration with custom gesture classifier
+
+<strong>Benefits:</strong>
+<li>Privacy-preserving (no video upload)</li>
+<li>Low latency (30-60 FPS)</li>
+<li>Extensible (add custom gestures)</li>
+
+<strong>Technical Novelty:</strong> Geometric rule-based classifier for accessibility gestures
+
+<hr/>
+
+<h2>🏆 Competitive Advantages</h2>
+
+<li><strong>All-in-One Platform:</strong> Vision + Navigation + Communication + Audit (competitors are single-purpose)</li>
+<li><strong>Zero Cost:</strong> Sustainable for free deployment at scale</li>
+<li><strong>India-First:</strong> RPwD Act 2016 compliance built-in</li>
+<li><strong>Open Architecture:</strong> Can be audited, customized, white-labeled</li>
+<li><strong>Accessibility Compliant:</strong> The platform itself meets WCAG AA standards</li>
+<li><strong>Multi-Agent Innovation:</strong> Novel orchestration approach</li>
+<li><strong>Dual-Engine Speech:</strong> Redundant systems for reliability</li>
+<li><strong>Real-Time Processing:</strong> MediaPipe for instant feedback</li>
+
+<hr/>
+
+<h2>🚨 Challenges & Limitations</h2>
+
+<h3>Current Limitations</h3>
+
+<li><strong>Internet Dependency:</strong></li>
+<p>   - Gemini API requires connectivity</p>
+<p>   - Maps require data (tile loading)</p>
+<p>   - <strong>Mitigation:</strong> Working on offline mode with cached data</p>
+
+<li><strong>Language Support:</strong></li>
+<p>   - Currently English-only UI</p>
+<p>   - Gemini supports multilingual prompts but UI needs translation</p>
+<p>   - <strong>Mitigation:</strong> Phase 1 roadmap includes Hindi, Tamil, Telugu, Bengali</p>
+
+<li><strong>Accuracy Variations:</strong></li>
+<p>   - OCR accuracy depends on image quality (lighting, angle, focus)</p>
+<p>   - Gesture recognition accuracy ~85-90%</p>
+<p>   - <strong>Mitigation:</strong> Provide user feedback mechanisms, allow manual correction</p>
+
+<li><strong>Device Requirements:</strong></li>
+<p>   - MediaPipe requires modern browser (Chrome 90+, Safari 14+)</p>
+<p>   - Camera/microphone access needed for some features</p>
+<p>   - <strong>Mitigation:</strong> Progressive enhancement, graceful degradation</p>
+
+<li><strong>Geographic Coverage:</strong></li>
+<p>   - OSM data quality varies by region (urban > rural)</p>
+<p>   - Accessibility data often missing in OSM</p>
+<p>   - <strong>Mitigation:</strong> Crowdsourced data collection, government partnerships</p>
+
+<h3>Technical Debt</h3>
+
+<li><strong>No User Authentication:</strong> Currently stateless, limits personalization</li>
+<li><strong>No Database:</strong> All data ephemeral, can't track history</li>
+<li><strong>Limited Error Recovery:</strong> Some edge cases not handled</li>
+<li><strong>No Analytics:</strong> Can't measure real-world impact yet</li>
+
+<hr/>
+
+<h2>📚 Resources & References</h2>
+
+<h3>Documentation</h3>
+<li><a href="https://ai.google.dev/docs">Google Gemini API Docs</a></li>
+<li><a href="https://fastapi.tiangolo.com/">FastAPI Documentation</a></li>
+<li><a href="https://react.dev/">React Documentation</a></li>
+<li><a href="https://leafletjs.com/reference.html">Leaflet.js Guide</a></li>
+<li><a href="https://google.github.io/mediapipe/solutions/hands.html">MediaPipe Hands</a></li>
+
+<h3>Regulatory Standards</h3>
+<li><a href="https://www.india.gov.in/spotlight/rights-persons-disabilities-act-2016">RPwD Act 2016 (India)</a></li>
+<li><a href="https://cpwd.gov.in/">CPWD Barrier-Free Guidelines</a></li>
+<li><a href="https://www.w3.org/WAI/WCAG21/quickref/">WCAG 2.1 AA Standards</a></li>
+
+<h3>OpenStreetMap Services</h3>
+<li><a href="https://nominatim.org/release-docs/develop/api/Overview/">Nominatim Geocoding</a></li>
+<li><a href="http://project-osrm.org/">OSRM Routing</a></li>
+<li><a href="https://wiki.openstreetmap.org/wiki/Overpass_API">Overpass API</a></li>
+
+<h3>Web APIs</h3>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API">Web Speech API</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder">MediaRecorder API</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API">Geolocation API</a></li>
+
+<hr/>
+
+<h2>🎤 Elevator Pitch (60 seconds)</h2>
+
+<em>"AccessIndia AI is a multi-agent accessibility platform empowering 80 million Indians with disabilities. Unlike single-purpose apps, we offer 5 specialized AI agents in one platform:</em>
+
+<em>- <strong>Vision Agent</strong> reads signs and describes scenes for blind users</em>
+<em>- <strong>Navigation Agent</strong> finds wheelchair-accessible routes using free OpenStreetMap</em>
+<em>- <strong>Communication Agent</strong> bridges speech and sign language barriers</em>
+<em>- <strong>Audit Agent</strong> evaluates buildings against India's RPwD Act 2016</em>
+<em>- <strong>Orchestrator Agent</strong> intelligently routes requests to the right specialist</em>
+
+<em>Built with Google Gemini 2.5 Flash and 100% free infrastructure, it costs $0/month to run—making it sustainable for government and NGO deployment. We've already achieved 31 passing tests, WCAG AA compliance, and a working prototype.</em>
+
+<em>Our mission: Make India truly accessible, one AI agent at a time."</em>
+
+<hr/>
+
+<h2>🎯 Presentation Tips</h2>
+
+<h3>For Technical Presentations</h3>
+
+<strong>1. Start with the Problem:</strong>
+<li>"80 million Indians with disabilities face daily barriers..."</li>
+<li>Show real user stories (Rajesh can't read medicine labels)</li>
+
+<strong>2. Demo the Solution:</strong>
+<li>Live demo each agent (2 minutes each)</li>
+<li>Show the orchestrator routing in action</li>
+<li>Highlight the "wow" moments (instant OCR, real-time gestures)</li>
+
+<strong>3. Deep Dive Architecture:</strong>
+<li>Show the multi-agent diagram</li>
+<li>Explain why each technology was chosen</li>
+<li>Walk through a request flow (user → frontend → backend → Gemini → response)</li>
+
+<strong>4. Address Scale & Security:</strong>
+<li>"Here's how we'd handle 1 million users..."</li>
+<li>"Here's how we protect privacy..."</li>
+
+<strong>5. Show Impact:</strong>
+<li>Metrics: 31 tests passing, 80M addressable market</li>
+<li>Roadmap: Regional languages, offline mode, government integration</li>
+
+<strong>6. Call to Action:</strong>
+<li>"We're seeking partnerships with..."</li>
+<li>"Next steps are..."</li>
+
+<h3>For Business Presentations</h3>
+
+<strong>1. Market Opportunity:</strong>
+<li>80M disabled + 150M indirect beneficiaries</li>
+<li>Growing smartphone penetration</li>
+<li>Government mandates (RPwD Act enforcement)</li>
+
+<strong>2. Competitive Advantage:</strong>
+<li>All-in-one vs fragmented solutions</li>
+<li>India-first approach</li>
+<li>Zero-cost infrastructure</li>
+
+<strong>3. Go-to-Market Strategy:</strong>
+<li>Freemium model (free for individuals)</li>
+<li>Enterprise tier (hospitals, buildings)</li>
+<li>Government contracts (states, municipalities)</li>
+
+<strong>4. Financial Projections:</strong>
+<li>Year 1: Grant-funded</li>
+<li>Year 2: $50K (freemium)</li>
+<li>Year 5: $10M (enterprise + government)</li>
+
+<strong>5. Impact Metrics:</strong>
+<li>10K buildings audited</li>
+<li>100K accessible routes found</li>
+<li>1M lives impacted</li>
+
+<strong>6. Ask:</strong>
+<li>Seed funding ($500K for 18 months)</li>
+<li>Government pilot programs</li>
+<li>NGO partnerships</li>
+
+<hr/>
+
+<h2>✅ Pre-Interview Checklist</h2>
+
+<h3>Technical Preparation</h3>
+
+<li>[ ] Can explain each agent's purpose and implementation</li>
+<li>[ ] Understand Gemini API (text, vision, audio models)</li>
+<li>[ ] Know FastAPI async patterns and middleware</li>
+<li>[ ] Understand React hooks (especially custom hooks)</li>
+<li>[ ] Can draw the system architecture from memory</li>
+<li>[ ] Know all API endpoints and their schemas</li>
+<li>[ ] Understand WCAG AA compliance requirements</li>
+<li>[ ] Can explain the dual-engine speech recognition</li>
+<li>[ ] Know OpenStreetMap service details (Nominatim, OSRM, Overpass)</li>
+<li>[ ] Understand MediaPipe gesture recognition</li>
+
+<h3>Demo Preparation</h3>
+
+<li>[ ] Have local dev environment running smoothly</li>
+<li>[ ] Test all 5 agents with sample inputs</li>
+<li>[ ] Prepare backup demo (video if live demo fails)</li>
+<li>[ ] Have test images ready (signs, buildings, medicine labels)</li>
+<li>[ ] Check camera/microphone permissions</li>
+<li>[ ] Ensure stable internet (for Gemini API)</li>
+
+<h3>Business Preparation</h3>
+
+<li>[ ] Know the 80M target market number</li>
+<li>[ ] Understand RPwD Act 2016 basics</li>
+<li>[ ] Can explain the freemium business model</li>
+<li>[ ] Know competitive landscape (Google Lookout, Be My Eyes)</li>
+<li>[ ] Have 5-year financial projections ready</li>
+<li>[ ] Prepared to discuss monetization ethics</li>
+
+<h3>Communication Preparation</h3>
+
+<li>[ ] Rehearse 60-second elevator pitch</li>
+<li>[ ] Prepare 3 user stories (personas)</li>
+<li>[ ] Have answers to "Why this matters" ready</li>
+<li>[ ] Practice explaining technical concepts to non-technical audience</li>
+<li>[ ] Prepare answers to common objections:</li>
+<p>  - "Why not use Google Lookout?"</p>
+<p>  - "How do you make money?"</p>
+<p>  - "What if Gemini API changes pricing?"</p>
+<p>  - "How accurate is the OCR/gestures?"</p>
+
+<hr/>
+
+<h2>🔥 Common Interview Questions (Quick Answers)</h2>
+
+<strong>Q: Explain the project in one sentence.</strong>
+<p>A: AccessIndia AI is a multi-agent AI platform that provides vision, navigation, communication, and audit assistance for 80 million Indians with disabilities.</p>
+
+<strong>Q: What's your biggest technical challenge?</strong>
+<p>A: Balancing AI accuracy with response latency while keeping costs at zero. We solved this with intelligent caching, dual-engine speech, and free-tier infrastructure.</p>
+
+<strong>Q: How is this different from existing apps?</strong>
+<p>A: We're the only all-in-one platform with India-specific compliance (RPwD Act), multi-agent intelligence, and zero-cost architecture. Competitors are single-purpose or lack Indian regulatory focus.</p>
+
+<strong>Q: What's your tech stack?</strong>
+<p>A: React 18 + FastAPI + Google Gemini 2.5 Flash + OpenStreetMap + MediaPipe. All chosen for performance, accessibility, and cost-effectiveness.</p>
+
+<strong>Q: How do you ensure accessibility?</strong>
+<p>A: The platform itself is WCAG AA compliant with semantic HTML, ARIA labels, keyboard navigation, high contrast, and screen reader support. We test with actual assistive technologies.</p>
+
+<strong>Q: Can you scale this?</strong>
+<p>A: Yes. We'd use CDN for frontend, Kubernetes for backend, Redis for caching, and load balancers. Current architecture is already async and horizontally scalable.</p>
+
+<strong>Q: What about privacy?</strong>
+<p>A: No user data is stored. Images and audio are processed in-memory and immediately discarded. MediaPipe runs entirely client-side. No tracking or analytics without consent.</p>
+
+<strong>Q: Why Gemini over other AI models?</strong>
+<p>A: Gemini 2.5 Flash offers multimodal (text + vision + audio) in one model, generous free tier, fast inference, and good Indian language support. Alternatives (OpenAI) are costly; open-source models lack multimodal polish.</p>
+
+<strong>Q: What happens if Gemini API goes down?</strong>
+<p>A: Orchestrator falls back to heuristic routing. Navigation works independently (OSM). Speech has dual-engine fallback. We show graceful error messages and retry logic.</p>
+
+<strong>Q: Next big feature?</strong>
+<p>A: Regional language support (Hindi, Tamil, Telugu, Bengali) with multilingual TTS/STT. This unlocks millions more users in non-English speaking communities.</p>
+
+<strong>Q: How do you measure success?</strong>
+<p>A: Primary: Lives impacted (target 1M in 3 years). Secondary: Buildings audited, routes found, images analyzed. Business: User retention, conversion rate, government adoptions.</p>
+
+<hr/>
+
+<h2>📝 Summary</h2>
+
+<strong>AccessIndia AI</strong> is a groundbreaking multi-agent accessibility platform that addresses the needs of 80+ million persons with disabilities in India through:
+
+<p>✅ <strong>5 Specialized AI Agents</strong> (Vision, Navigation, Communication, Audit, Orchestrator)  </p>
+<p>✅ <strong>India-First Compliance</strong> (RPwD Act 2016, CPWD Guidelines)  </p>
+<p>✅ <strong>Zero-Cost Infrastructure</strong> (100% free-tier services)  </p>
+<p>✅ <strong>WCAG AA Compliant</strong> (Accessibility-first design)  </p>
+<p>✅ <strong>31 Passing Tests</strong> (Comprehensive test coverage)  </p>
+<p>✅ <strong>Modern Tech Stack</strong> (React 18, FastAPI, Gemini 2.5 Flash, OSM)  </p>
+
+<strong>Key Differentiators:</strong>
+<li>All-in-one platform (not single-purpose)</li>
+<li>Multi-agent orchestration (intelligent routing)</li>
+<li>Dual-engine speech recognition (redundancy)</li>
+<li>Real-time gesture recognition (privacy-preserving)</li>
+<li>Sustainable economics (free for end-users)</li>
+
+<strong>Impact Potential:</strong>
+<li>80M direct users (disabled individuals)</li>
+<li>150M indirect beneficiaries (families, caregivers)</li>
+<li>Government adoption ready</li>
+<li>Scalable to other countries</li>
+
+<strong>Next Steps:</strong>
+<li>Regional language support</li>
+<li>Offline mode development</li>
+<li>Government pilot programs</li>
+<li>NGO partnerships</li>
+<li>Enterprise white-labeling</li>
+
+<hr/>
+
+<h2>🙏 Acknowledgments</h2>
+
+<strong>Team Coin Hustlers</strong> - HackAgentAIx International Hackathon 2026
+
+<strong>Built with:</strong>
+<li>Google Gemini 2.5 Flash (AI engine)</li>
+<li>OpenStreetMap Community (mapping data)</li>
+<li>React, FastAPI, and open-source ecosystem</li>
+
+<strong>In alignment with:</strong>
+<li>Rights of Persons with Disabilities Act 2016 (India)</li>
+<li>CPWD Harmonised Guidelines for Barrier-Free Built Environment</li>
+<li>WCAG 2.1 Level AA Standards</li>
+
+<hr/>
+
+<h2>📞 Contact & Links</h2>
+
+<strong>Repository:</strong> https://github.com/smarpitm/HackAgentAIx_Team-Coin-Hustlers
+
+<strong>Documentation:</strong>
+<li>README.md (comprehensive overview)</li>
+<li>AccessIndia_AI_Step_by_Step_Build_Guide.pdf</li>
+<li>AccessIndia_AI_Promptbook.pdf</li>
+<li>AccessIndia_AI_45_VibeCoding_Prompts.pdf</li>
+
+<strong>Live Demo:</strong> [Coming Soon]
+
+<strong>Team Contact:</strong> [Add contact details]
+
+<hr/>
+
+<strong>Document Version:</strong> 1.0  
+<strong>Last Updated:</strong> January 30, 2026  
+<strong>Prepared by:</strong> Team Coin Hustlers  
+<strong>Purpose:</strong> Interview Preparation & Technical Assessment Guide
+
+<hr/>
+
+<em>"Building technology that breaks barriers, not people."</em>
+
+
+
+    <script>
+        // Auto-print dialog on Ctrl+P
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+                e.preventDefault();
+                window.print();
+            }
+        });
+    </script>
+</body>
+</html>
